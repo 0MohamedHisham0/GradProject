@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hti.Grad_Project.Activities.Splash">
+
+    <carbon.widget.ImageView
+        android:id="@+id/MainLogo_Splash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/main_logo" />
+    <TextView
+        android:id="@+id/tv1_Splash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/MainLogo_Splash"
+        android:layout_centerHorizontal="true"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Convert your Book \n into machine"
+        />
+
+    <TextView
+        android:id="@+id/tv2_Splash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv1_Splash"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:fontFamily="@font/s"
+        android:gravity="center"
+        android:textColor="@color/secondary"
+        android:text="Ask your book any  question you want, and you will get the answer Using NLP Technology"
+        android:textSize="14dp" />
+
+
+</RelativeLayout>

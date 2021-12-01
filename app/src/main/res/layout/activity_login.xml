@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hti.Grad_Project.Activities.LoginActivity">
+
+
+    <TextView
+        android:id="@+id/tv1_Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20sp"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/poppins_black"
+        android:gravity="top"
+        android:lineSpacingExtra="0sp"
+        android:text="Welcome Back!"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv2_Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Fill your details or continue with\nupload pdf or using ocr"
+        android:textColor="@color/secondary"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv1_Login" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/TI_Email_Login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Email Address"
+        app:boxCornerRadiusBottomEnd="16sp"
+        app:boxCornerRadiusBottomStart="16sp"
+        app:boxCornerRadiusTopEnd="16sp"
+        app:boxCornerRadiusTopStart="16sp"
+        app:errorIconDrawable="@drawable/ic_error"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv2_Login"
+        app:startIconDrawable="@drawable/icon_email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/EditText_Email_SignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textColor="?attr/colorSecondary" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/TI_Pass_Login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Password"
+        app:boxCornerRadiusBottomEnd="16sp"
+        app:boxCornerRadiusBottomStart="16sp"
+        app:boxCornerRadiusTopEnd="16sp"
+        app:boxCornerRadiusTopStart="16sp"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/secondary"
+        app:errorIconDrawable="@drawable/ic_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TI_Email_Login"
+        app:startIconDrawable="@drawable/icon_password">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/EditText_Pass_CreateAcc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="?attr/colorSecondary" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_rememberME_Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TI_Pass_Login">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkbox_RememberMe_SignIn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:buttonTint="@color/orange_main" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Remember me"
+            android:textColor="?attr/colorSecondary" />
+
+    </LinearLayout>
+
+    <carbon.widget.Button
+        android:id="@+id/bt_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/orange_main"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Login"
+        android:textColor="@color/white"
+        app:carbon_cornerRadius="16dp"
+        app:carbon_rippleColor="@color/secondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_rememberME_Login" />
+
+    <LinearLayout
+        android:id="@+id/ll_tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_login">
+
+        <View
+            android:layout_width="15dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:background="@color/secondary" />
+
+        <TextView
+            android:id="@+id/tv3_Login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Or Continue with"
+            android:textColor="@color/secondary" />
+
+        <View
+            android:layout_width="15dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:background="@color/secondary" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_tv3">
+
+        <carbon.widget.Button
+            android:id="@+id/bt_pdf_Login"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/ic_pdf"
+            android:drawablePadding="20sp"
+            app:carbon_cornerRadius="16dp"
+            app:carbon_rippleColor="@color/secondary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+        <carbon.widget.Button
+            android:id="@+id/bt_ocr_Login"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/ic_ocr"
+            android:drawablePadding="20sp"
+            app:carbon_cornerRadius="16dp"
+            app:carbon_rippleColor="@color/secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bt_pdf_Login"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_newAcc_Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|top"
+        android:fontFamily="@font/poppins_regular"
+        android:text="New User?" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal|top"
+            android:fontFamily="@font/poppins_regular"
+            android:text=" Create Account"
+            android:textColor="@color/orange_main"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
