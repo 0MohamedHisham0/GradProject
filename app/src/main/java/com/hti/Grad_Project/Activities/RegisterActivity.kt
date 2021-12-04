@@ -5,13 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hti.myapplication.R
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -30,7 +31,6 @@ class RegisterActivity : AppCompatActivity() {
         }
 
     }
-
 
     private fun CheckDataInput(
         ed_email: TextInputEditText,
@@ -102,9 +102,8 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
-        //True Code
-        //        val userModel = UserModel(name, email, password, phone)
-        //        CreateNewUser(userModel)
+        //Success validation
+        createNewAccount(email, password, name)
     }
 
     fun WatchListenerEditTextDisableError(
@@ -155,5 +154,40 @@ class RegisterActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun createNewAccount(email: String, password: String, userName: String) {
+        mAuth!!.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    val userId = mAuth!!.currentUser!!.uid
+
+                    //update user profile information
+                    val currentUserDb = mDatabaseReference!!.child("Users").child(userId)
+                    currentUserDb.child("email").setValue(email)
+                    currentUserDb.child("userName").setValue(userName)
+
+//                    spin_kit_QS.visibility = View.GONE
+//                    clRegister.visibility = View.VISIBLE
+
+                    updateUserInfoAndUI()
+                } else {
+                    // If sign in fails, display a message to the user.
+//                    spin_kit_QS.visibility = View.GONE
+                    Toast.makeText(
+                        this, task.exception?.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+    }
+
+    private fun updateUserInfoAndUI() {
+        //start next activity
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finishAffinity()
+    }
+
 
 }

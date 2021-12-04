@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "716775440230",
+    "project_id": "gradproject-f604b",
+    "storage_bucket": "gradproject-f604b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:716775440230:android:50552b704f7236f59492a7",
+        "android_client_info": {
+          "package_name": "com.hti.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "716775440230-ak40la6gnpkjsdsgmjvh9of16v2n4l4u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAHPP7vvYQ01JviZuVHzjiUXfr7qnYX8I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "716775440230-ak40la6gnpkjsdsgmjvh9of16v2n4l4u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

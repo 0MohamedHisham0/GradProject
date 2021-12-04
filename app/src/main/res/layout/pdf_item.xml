@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="150dp"
+    android:layout_margin="22dp"
+    android:layout_height="200dp"
+    android:background="?attr/colorOnSecondary"
+    android:elevation="10sp"
+    app:carbon_cornerRadius="20sp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_textAndPage_pdfItem"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_mainText_pdfItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="14"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_pageNum_pdfItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/tv_pageNum_pdfItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:text="1"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_Buttons_pdfItem"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <carbon.widget.Button
+            android:id="@+id/bt_browseImage_pdfItem"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="40dp"
+            android:background="@color/orange_main"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Browse Image"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:carbon_cornerRadius="12dp"
+            app:carbon_rippleColor="@color/secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_or_pdfItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bt_browseImage_pdfItem">
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
+                android:background="@color/secondary" />
+
+            <TextView
+                android:id="@+id/tv3_Login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="Or"
+                android:textSize="11sp"
+                android:textColor="@color/secondary" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:background="@color/secondary" />
+        </LinearLayout>
+
+        <carbon.widget.Button
+            android:id="@+id/bt_captureImage_pdfItem"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="10dp"
+            android:background="@color/orange_main"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Capture Image"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:carbon_cornerRadius="12dp"
+            app:carbon_rippleColor="@color/secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_or_pdfItem" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</carbon.widget.ConstraintLayout>

@@ -9,7 +9,7 @@
         <item name="textInputStyle">@style/TextInputLayoutStyle</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#121212</item>
-
+        <item name="colorOnSecondary">#ffff</item>
 
     </style>
 
@@ -18,4 +18,13 @@
         <item name="errorEnabled">true</item>
         <item name="hintTextColor">@color/secondary</item>
     </style>
+
+    <style name="Theme.GradProject.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.GradProject.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.GradProject.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

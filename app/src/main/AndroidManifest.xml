@@ -3,7 +3,9 @@
     package="com.hti.myapplication">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,16 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GradProject">
         <activity
-            android:name="com.hti.Grad_Project.Activities.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.hti.Grad_Project.Activities.LoginActivity"
+            android:name="com.hti.Grad_Project.Activities.TextRecognitionActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.hti.Grad_Project.Activities.BaseActivity"
+            android:exported="false"
+            android:label="@string/title_activity_base"
+            android:theme="@style/Theme.GradProject.NoActionBar" />
+        <activity
+            android:name="com.hti.Grad_Project.Activities.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.hti.Grad_Project.Activities.LoginActivity"
+            android:exported="true">
+
         </activity>
         <activity
             android:name="com.hti.Grad_Project.Activities.Splash"

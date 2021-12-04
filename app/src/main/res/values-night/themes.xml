@@ -11,6 +11,7 @@
         <item name="colorSecondary">@color/white</item>
         <item name="colorOnSecondary">#727272</item>
 
+
     </style>
 
     <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
