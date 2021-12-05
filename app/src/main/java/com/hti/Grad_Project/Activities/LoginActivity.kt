@@ -2,10 +2,8 @@ package com.hti.Grad_Project.Activities
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
@@ -13,7 +11,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.hti.myapplication.R
+import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : BaseActivity() {
@@ -21,12 +19,20 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        if (mAuth?.currentUser?.uid != null){
+            startActivity(Intent(this, TextRecognitionActivity::class.java))
+            finishAffinity()
+        }
+
         ll_newAcc_Login.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
         bt_login.setOnClickListener {
             CheckDataInput(ed_email = EditText_Email_SignIn, ed_password = EditText_Pass_Login)
+        }
+        bt_ocr_Login.setOnClickListener {
+            startActivity(Intent(this, TextRecognitionActivity::class.java))
         }
 
     }
@@ -99,7 +105,7 @@ class LoginActivity : BaseActivity() {
             mDatabaseReference?.child("Users")?.child(it.uid)
                 ?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val intent = Intent(context, RegisterActivity::class.java)
+                        val intent = Intent(context, TextRecognitionActivity::class.java)
                         startActivity(intent)
                         finishAffinity()
                     }

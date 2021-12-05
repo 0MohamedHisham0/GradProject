@@ -1,15 +1,13 @@
 package com.hti.Grad_Project.Activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.hti.myapplication.R
-import kotlinx.android.synthetic.main.activity_login.*
+import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : BaseActivity() {

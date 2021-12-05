@@ -1,4 +1,4 @@
-package com.hti.myapplication
+package com.hti.Grad_Project
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

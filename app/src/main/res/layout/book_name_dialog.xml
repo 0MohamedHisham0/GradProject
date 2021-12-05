@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20sp"
+    app:carbon_cornerRadius="20dp">
+
+    <carbon.widget.EditText
+        android:id="@+id/et_bookName_BookNameDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:background="?attr/colorOnSecondary"
+        android:gravity="center"
+        android:hint="Book Name"
+        android:padding="20dp"
+        app:carbon_cornerRadius="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="20dp" />
+
+    <carbon.widget.Button
+        android:id="@+id/bt_save_BookNameDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/orange_main"
+        android:text="Save"
+        android:textColor="@color/white"
+        app:carbon_cornerRadius="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ed_bookName_BookNameDialog" />
+</carbon.widget.ConstraintLayout>

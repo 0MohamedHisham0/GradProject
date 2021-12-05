@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.hti.myapplication.R
-import com.hti.myapplication.databinding.FragmentFirstBinding
+import com.hti.Grad_Project.R
+import com.hti.Grad_Project.databinding.FragmentFirstBinding
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.

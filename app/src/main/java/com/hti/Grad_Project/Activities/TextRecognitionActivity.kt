@@ -2,37 +2,31 @@ package com.hti.Grad_Project.Activities
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.Text
-import com.google.mlkit.vision.text.Text.TextBlock
 
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.hti.Grad_Project.Adapter.ocr_pdf_adapter
 import com.hti.Grad_Project.Model.pdf_Model
-import com.hti.myapplication.R
+import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.activity_text_recognation.*
 
-import java.io.FileDescriptor
 import java.io.IOException
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hti.Grad_Project.Utilities.passUriToActivity
+import kotlinx.android.synthetic.main.book_name_dialog.*
 
 
 class TextRecognitionActivity : BaseActivity(), passUriToActivity {
@@ -46,13 +40,39 @@ class TextRecognitionActivity : BaseActivity(), passUriToActivity {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_recognation)
 
+        //if User is Authenticated
+        if (mAuth?.currentUser != null) {
+            bt_SavePDFTOFirebase_OCR.visibility = View.VISIBLE
+        }
+
         //Ask for permission of camera upon first launch of application
         askPermissionInFirstTime()
 
         initRv()
 
+        //Clicks Handling
+        bt_SavePDFTOFirebase_OCR.setOnClickListener {
+            openDialogSaveBook()
+        }
+
     }
 
+    //Add Data To Store Firebase
+    private fun addBookToFireBase(bookName: String, list: MutableList<pdf_Model>) {
+        for (i in list) {
+            list[0].mainText = bookName
+            mDatabaseFireStore?.collection("UsersBooks")!!
+                .document(mAuth?.currentUser?.uid.toString())
+                .collection(bookName).document(i.pageNum).set(i).addOnSuccessListener {
+                    Toast.makeText(
+                        this,
+                        "Your Book Saved Successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+        }
+    }
 
     //Recyclerview
     private fun initRv() {
@@ -142,6 +162,30 @@ class TextRecognitionActivity : BaseActivity(), passUriToActivity {
         image_uri = value
     }
 
+    private fun openDialogSaveBook() {
+        val dialog = Dialog(this) // Context, this, etc.
+        dialog.setContentView(R.layout.book_name_dialog)
+        dialog.bt_save_BookNameDialog.setOnClickListener {
+            addBookToFireBase(dialog.et_bookName_BookNameDialog.text.toString(), pdfList)
+            dialog.dismiss()
+        }
+        dialog.setTitle("BookName")
+        dialog.show()
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+    }
+
+    //Opens camera to capture image
+    private fun openCamera() {
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "New Picture")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
+        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
+        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
+    }
 
     //Unused Fun
 
@@ -172,16 +216,6 @@ class TextRecognitionActivity : BaseActivity(), passUriToActivity {
         }
     }
 
-    //Opens camera to capture image
-    private fun openCamera() {
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "New Picture")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
-    }
 }
 
 

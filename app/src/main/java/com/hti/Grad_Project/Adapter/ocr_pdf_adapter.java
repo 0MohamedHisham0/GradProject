@@ -1,6 +1,5 @@
 package com.hti.Grad_Project.Adapter;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hti.Grad_Project.Activities.TextRecognitionActivity;
 import com.hti.Grad_Project.Model.pdf_Model;
 import com.hti.Grad_Project.Utilities.passUriToActivity;
-import com.hti.myapplication.R;
+import com.hti.Grad_Project.R;
 
 import java.util.List;
 

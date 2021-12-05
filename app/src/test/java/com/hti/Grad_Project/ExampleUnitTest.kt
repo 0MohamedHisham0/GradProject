@@ -1,4 +1,4 @@
-package com.hti.myapplication
+package com.hti.Grad_Project
 
 import org.junit.Test
 

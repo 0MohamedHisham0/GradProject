@@ -12,11 +12,14 @@ import carbon.widget.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 open class BaseActivity : AppCompatActivity() {
     var mAuth: FirebaseAuth? = null
     var mDatabaseReference: DatabaseReference? = null
-    var mDatabase: FirebaseDatabase? = null
+    var mDatabaseFireStore:FirebaseFirestore? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +31,9 @@ open class BaseActivity : AppCompatActivity() {
             }
             if (mDatabaseReference == null) {
                 mDatabaseReference = FirebaseDatabase.getInstance().reference
+            }
+            if (mDatabaseFireStore == null) {
+                mDatabaseFireStore = Firebase.firestore
             }
 
         } else {

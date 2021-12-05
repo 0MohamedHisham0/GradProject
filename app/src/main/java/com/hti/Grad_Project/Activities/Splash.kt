@@ -3,8 +3,7 @@ package com.hti.Grad_Project.Activities
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.hti.myapplication.R
-import android.net.NetworkInfo
+import com.hti.Grad_Project.R
 
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
