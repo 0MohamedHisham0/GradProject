@@ -21,38 +21,50 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hti.Grad_Project.Activities.TextRecognitionActivity;
-import com.hti.Grad_Project.Model.pdf_Model;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity;
+import com.hti.Grad_Project.Model.book_page_Model;
 import com.hti.Grad_Project.Utilities.passUriToActivity;
 import com.hti.Grad_Project.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ocr_pdf_adapter extends RecyclerView.Adapter<VH_OCR> {
+import carbon.widget.ImageView;
+
+public class page_adapter extends RecyclerView.Adapter<VH_OCR> {
     passUriToActivity mCallback;
     View view;
-    List<pdf_Model> list;
+    List<book_page_Model> list;
     Context context;
+    String bookName;
+
     private Uri image_uri;
     private final int RESULT_LOAD_IMAGE = 123;
     private final int IMAGE_CAPTURE_CODE = 654;
 
-    public ocr_pdf_adapter(passUriToActivity mCallback, List<pdf_Model> list, Context context) {
+    public page_adapter(passUriToActivity mCallback, List<book_page_Model> list, Context context, String bookName) {
         this.mCallback = mCallback;
         this.list = list;
         this.context = context;
+        this.bookName = bookName;
     }
 
     @NonNull
     @Override
     public VH_OCR onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        view = LayoutInflater.from(context).inflate(R.layout.pdf_item, parent, false);
+        view = LayoutInflater.from(context).inflate(R.layout.book_page_item, parent, false);
         return new VH_OCR(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull VH_OCR holder, int position) {
-        pdf_Model model = list.get(position);
+        book_page_Model model = list.get(position);
 
         if (position != 0) {
             holder.cl_textAndPages.setVisibility(View.VISIBLE);
@@ -60,6 +72,16 @@ public class ocr_pdf_adapter extends RecyclerView.Adapter<VH_OCR> {
 
             holder.mainText.setText(model.getMainText());
             holder.pageNum.setText(model.getPageNum());
+
+            holder.bt_deleteItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deletePage(model, holder.getAdapterPosition());
+
+                }
+            });
+
+
         } else {
             holder.cl_Buttons.setVisibility(View.VISIBLE);
             holder.cl_textAndPages.setVisibility(View.GONE);
@@ -71,6 +93,7 @@ public class ocr_pdf_adapter extends RecyclerView.Adapter<VH_OCR> {
             holder.bt_captureImage.setOnClickListener(view -> {
                 validateCameraPermission();
             });
+
 
         }
 
@@ -111,14 +134,47 @@ public class ocr_pdf_adapter extends RecyclerView.Adapter<VH_OCR> {
         mCallback.onCaptureImage(image_uri);
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         cameraIntent.putExtra("output", (Parcelable) image_uri);
-        ((TextRecognitionActivity) context).startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
+        ((Pages_NewBook_TextRec_Activity) context).startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
 
     }
 
     //Open Gallery
     private void openGalleryToPickImage() {
         Intent galleryIntent = new Intent("android.intent.action.PICK", MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        ((TextRecognitionActivity) context).startActivityForResult(galleryIntent, this.RESULT_LOAD_IMAGE);
+        ((Pages_NewBook_TextRec_Activity) context).startActivityForResult(galleryIntent, this.RESULT_LOAD_IMAGE);
+    }
+
+    //DeleteItem
+    private void deletePage(book_page_Model page, int position) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth;
+        mAuth = FirebaseAuth.getInstance();
+
+        //
+        Map<String, Object> updates = new HashMap<>();
+        updates.put(page.getPageNum(), FieldValue.delete());
+
+        if (!bookName.equals("")) {
+            DocumentReference documentReference = db.collection("UsersBooks").document("UsersBooks").collection(mAuth.getCurrentUser().getUid()).document(bookName);
+            documentReference.update(updates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(@NonNull Void unused) {
+                    removeAt(position, list);
+                    Toast.makeText(context, "Page " + page.getPageNum() + " Deleted Successfully", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        } else {
+            removeAt(position, list);
+
+        }
+
+    }
+
+    public void removeAt(int position, List<book_page_Model> list) {
+        list.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, list.size());
     }
 }
 
@@ -126,19 +182,23 @@ class VH_OCR extends RecyclerView.ViewHolder {
     TextView mainText, pageNum;
     ConstraintLayout cl_textAndPages, cl_Buttons;
     Button bt_captureImage, bt_browseImage;
+    ImageView bt_deleteItem;
 
     public VH_OCR(@NonNull View itemView) {
         super(itemView);
         //TextAndPages
-        mainText = itemView.findViewById(R.id.tv_mainText_pdfItem);
-        pageNum = itemView.findViewById(R.id.tv_pageNum_pdfItem);
-        cl_textAndPages = itemView.findViewById(R.id.cl_textAndPage_pdfItem);
+        mainText = itemView.findViewById(R.id.tv_mainText_book_page_item);
+        pageNum = itemView.findViewById(R.id.tv_pageNum_book_page_item);
+        cl_textAndPages = itemView.findViewById(R.id.cl_textAndPage_book_page_item);
 
         //Buttons
-        cl_Buttons = itemView.findViewById(R.id.cl_Buttons_pdfItem);
-        bt_captureImage = itemView.findViewById(R.id.bt_captureImage_pdfItem);
-        bt_browseImage = itemView.findViewById(R.id.bt_browseImage_pdfItem);
+        cl_Buttons = itemView.findViewById(R.id.cl_Buttons_book_page_item);
+        bt_captureImage = itemView.findViewById(R.id.bt_captureImage_book_page_item);
+        bt_browseImage = itemView.findViewById(R.id.bt_browseImage_book_page_item);
+        bt_deleteItem = itemView.findViewById(R.id.bt_delete_book_page_item);
 
     }
+
+
 }
 

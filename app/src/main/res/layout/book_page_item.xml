@@ -5,18 +5,21 @@
     android:layout_width="150dp"
     android:layout_margin="15dp"
     android:layout_height="200dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:carbon_rippleColor="@color/carbon_rippleColor_dark"
     android:background="?attr/colorOnSecondary"
     android:elevation="10sp"
     app:carbon_cornerRadius="20sp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_textAndPage_pdfItem"
+        android:id="@+id/cl_textAndPage_book_page_item"
         android:layout_width="match_parent"
         android:visibility="gone"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_mainText_pdfItem"
+            android:id="@+id/tv_mainText_book_page_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -25,14 +28,14 @@
             android:paddingEnd="10dp"
             android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
             android:textSize="10sp"
-            app:layout_constraintBottom_toTopOf="@+id/tv_pageNum_pdfItem"
+            app:layout_constraintBottom_toTopOf="@+id/tv_pageNum_book_page_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SmallSp" />
 
         <TextView
-            android:id="@+id/tv_pageNum_pdfItem"
+            android:id="@+id/tv_pageNum_book_page_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -42,10 +45,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <carbon.widget.ImageView
+            android:id="@+id/bt_delete_book_page_item"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/icon_delete"
+            app:carbon_rippleColor="@color/carbon_rippleColor_dark"
+            app:carbon_rippleRadius="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_Buttons_pdfItem"
+        android:id="@+id/cl_Buttons_book_page_item"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,7 +70,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <carbon.widget.Button
-            android:id="@+id/bt_browseImage_pdfItem"
+            android:id="@+id/bt_browseImage_book_page_item"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_marginTop="40dp"
@@ -72,13 +88,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/ll_or_pdfItem"
+            android:id="@+id/ll_or_book_page_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bt_browseImage_pdfItem">
+            app:layout_constraintTop_toBottomOf="@id/bt_browseImage_book_page_item">
 
             <View
                 android:layout_width="15dp"
@@ -105,7 +121,7 @@
         </LinearLayout>
 
         <carbon.widget.Button
-            android:id="@+id/bt_captureImage_pdfItem"
+            android:id="@+id/bt_captureImage_book_page_item"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_margin="10dp"
@@ -120,7 +136,7 @@
             app:carbon_rippleColor="@color/secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_or_pdfItem" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_or_book_page_item" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

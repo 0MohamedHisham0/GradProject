@@ -18,30 +18,54 @@ import com.google.mlkit.vision.common.InputImage
 
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import com.hti.Grad_Project.Adapter.ocr_pdf_adapter
-import com.hti.Grad_Project.Model.pdf_Model
+import com.hti.Grad_Project.Model.book_page_Model
 import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.activity_text_recognation.*
 
 import java.io.IOException
 import androidx.recyclerview.widget.GridLayoutManager
+import com.hti.Grad_Project.Adapter.page_adapter
+import com.hti.Grad_Project.Model.book_Model
 import com.hti.Grad_Project.Utilities.passUriToActivity
 import kotlinx.android.synthetic.main.book_name_dialog.*
 
 
-class TextRecognitionActivity : BaseActivity(), passUriToActivity {
+class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
 
     private var image_uri: Uri? = null
     private val RESULT_LOAD_IMAGE = 123
     private val IMAGE_CAPTURE_CODE = 654
-    private val pdfList = mutableListOf<pdf_Model>()
+    private var pdfList = mutableListOf<book_page_Model>()
+
+    private var booksMap = mutableMapOf<String, String>()
+    private var oldBookOrNew = "NEW"
+    private var bookName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_recognation)
 
+
+        //Came from Old book
+
+        var i = intent?.getSerializableExtra("bookPages") as? (book_Model)
+
+        if (i != null) {
+
+            if (i.pagesList != null) {
+                pdfList = i.pagesList
+                bookName = i.bookName
+                tv_toolbar_OCR.text = i.bookName
+            }
+
+            if (i.bookName != null && i.pagesList.size != 0) {
+                oldBookOrNew = "OLD"
+            }
+
+        }
+
         //if User is Authenticated
-        if (mAuth?.currentUser != null) {
+        if (!mAuth?.currentUser?.uid?.isEmpty()!!) {
             bt_SavePDFTOFirebase_OCR.visibility = View.VISIBLE
         }
 
@@ -55,15 +79,22 @@ class TextRecognitionActivity : BaseActivity(), passUriToActivity {
             openDialogSaveBook()
         }
 
+        bt_back_OCR.setOnClickListener {
+            startActivity(Intent(this, MyBooks_Activity::class.java))
+            finishAffinity()
+        }
+
     }
 
     //Add Data To Store Firebase
-    private fun addBookToFireBase(bookName: String, list: MutableList<pdf_Model>) {
+    private fun addBookToFireBase(bookName: String, list: MutableList<book_page_Model>) {
         for (i in list) {
+            booksMap[i.pageNum] = i.mainText
             list[0].mainText = bookName
             mDatabaseFireStore?.collection("UsersBooks")!!
-                .document(mAuth?.currentUser?.uid.toString())
-                .collection(bookName).document(i.pageNum).set(i).addOnSuccessListener {
+                .document("UsersBooks")
+                .collection(mAuth?.currentUser?.uid.toString()).document(bookName).set(booksMap)
+                .addOnSuccessListener {
                     Toast.makeText(
                         this,
                         "Your Book Saved Successfully",
@@ -76,17 +107,24 @@ class TextRecognitionActivity : BaseActivity(), passUriToActivity {
 
     //Recyclerview
     private fun initRv() {
-        addPageToRv("FirstPage")
+        if (oldBookOrNew == "NEW")
+            addPageToRv("FirstPage")
         rv_pdf_OCR.layoutManager = GridLayoutManager(this, 2)
-        rv_pdf_OCR.adapter = ocr_pdf_adapter(this, pdfList, this)
+        rv_pdf_OCR.adapter =
+            page_adapter(this, pdfList, this, bookName)
     }
 
     private fun addPageToRv(mainText: String) {
-        var p: pdf_Model = pdf_Model(mainText, (pdfList.size).toString())
+        var p: book_page_Model =
+            book_page_Model(
+                mainText,
+                (pdfList.size).toString()
+            )
         p.mainText = mainText
         p.pageNum = (pdfList.size).toString()
         pdfList.add(p)
-        rv_pdf_OCR.adapter = ocr_pdf_adapter(this, pdfList, this)
+        rv_pdf_OCR.adapter =
+            page_adapter(this, pdfList, this, bookName)
     }
 
     //TextRecognition
@@ -165,6 +203,11 @@ class TextRecognitionActivity : BaseActivity(), passUriToActivity {
     private fun openDialogSaveBook() {
         val dialog = Dialog(this) // Context, this, etc.
         dialog.setContentView(R.layout.book_name_dialog)
+
+        if (bookName != "") {
+            dialog.et_bookName_BookNameDialog.setText(bookName)
+        }
+
         dialog.bt_save_BookNameDialog.setOnClickListener {
             addBookToFireBase(dialog.et_bookName_BookNameDialog.text.toString(), pdfList)
             dialog.dismiss()
@@ -191,7 +234,8 @@ class TextRecognitionActivity : BaseActivity(), passUriToActivity {
 
     //BrowseImage From Phone
     private fun openGalleryToPickImage() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val galleryIntent =
+            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE)
     }
 

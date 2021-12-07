@@ -1,10 +1,12 @@
 package com.hti.Grad_Project.Model;
 
-public class pdf_Model {
+import java.io.Serializable;
+
+public class book_page_Model implements Serializable {
     private String mainText;
     private String pageNum;
 
-    public pdf_Model(String mainText, String pageNum) {
+    public book_page_Model(String mainText, String pageNum) {
         this.mainText = mainText;
         this.pageNum = pageNum;
     }

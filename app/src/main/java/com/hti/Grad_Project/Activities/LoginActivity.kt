@@ -20,7 +20,7 @@ class LoginActivity : BaseActivity() {
         setContentView(R.layout.activity_login)
 
         if (mAuth?.currentUser?.uid != null){
-            startActivity(Intent(this, TextRecognitionActivity::class.java))
+            startActivity(Intent(this, Pages_NewBook_TextRec_Activity::class.java))
             finishAffinity()
         }
 
@@ -32,7 +32,7 @@ class LoginActivity : BaseActivity() {
             CheckDataInput(ed_email = EditText_Email_SignIn, ed_password = EditText_Pass_Login)
         }
         bt_ocr_Login.setOnClickListener {
-            startActivity(Intent(this, TextRecognitionActivity::class.java))
+            startActivity(Intent(this, Pages_NewBook_TextRec_Activity::class.java))
         }
 
     }
@@ -105,7 +105,7 @@ class LoginActivity : BaseActivity() {
             mDatabaseReference?.child("Users")?.child(it.uid)
                 ?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val intent = Intent(context, TextRecognitionActivity::class.java)
+                        val intent = Intent(context, Pages_NewBook_TextRec_Activity::class.java)
                         startActivity(intent)
                         finishAffinity()
                     }

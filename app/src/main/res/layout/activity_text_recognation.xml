@@ -19,15 +19,19 @@
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_gravity="start"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:src="@drawable/icon_back"
             app:carbon_rippleColor="@color/carbon_rippleColor_dark"
-            app:carbon_rippleRadius="100sp" />
+            app:carbon_rippleRadius="20sp" />
 
         <TextView
+            android:id="@+id/tv_toolbar_OCR"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
@@ -37,15 +41,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_pdf_OCR"
-        android:padding="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/ll_buttons_OCR"
         android:layout_below="@+id/ll_bar_OCR"
-        app:layout_behavior = "@string/appbar_scrolling_view_behavior"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+        android:padding="15dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <LinearLayout
         android:id="@+id/ll_buttons_OCR"
@@ -62,7 +66,6 @@
         <carbon.widget.Button
             android:id="@+id/bt_SavePDFTOFirebase_OCR"
             android:layout_width="0dp"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
@@ -71,6 +74,7 @@
             android:padding="10dp"
             android:text="Save In my\n categories now"
             android:textColor="@color/white"
+            android:visibility="gone"
             app:carbon_cornerRadius="16dp"
             app:carbon_rippleColor="@color/secondary" />
 
@@ -89,42 +93,5 @@
             app:carbon_rippleColor="@color/secondary" />
 
     </LinearLayout>
-    <!--    -->
-    <!--    -->
-    <!--    <carbon.widget.ImageView-->
-    <!--        android:id="@+id/iv_TextRec"-->
-    <!--        android:layout_width="200dp"-->
-    <!--        android:layout_height="200dp"-->
-    <!--        android:clickable="true"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        android:focusable="true" />-->
-
-    <!--    <Button-->
-    <!--        android:id="@+id/bt_browseImage"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:text="Browse New Image"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/iv_TextRec" />-->
-    <!--    -->
-    <!--    <Button-->
-    <!--        android:id="@+id/bt_textRec"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        android:text="Recognize Image Text"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/bt_browseImage" />-->
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/tv_TextFormRecImage"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/bt_textRec" />-->
 
 </RelativeLayout>

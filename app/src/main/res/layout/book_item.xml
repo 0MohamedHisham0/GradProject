@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="150dp"
+    android:layout_height="200dp"
+    android:layout_margin="15dp"
+    android:background="?attr/colorOnSecondary"
+    android:clickable="true"
+    android:elevation="10sp"
+    android:focusable="true"
+    app:carbon_cornerRadius="20sp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_textAndPage_book_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_mainText_book_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="14"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Book Name"
+            android:textSize="19sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/tv_pageNum_book_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:text="Pages : 1"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_mainText_book_item" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <carbon.widget.ImageView
+        android:id="@+id/bt_delete_book_item"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/icon_delete"
+        app:carbon_rippleColor="@color/carbon_rippleColor_dark"
+        app:carbon_rippleRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</carbon.widget.ConstraintLayout>
