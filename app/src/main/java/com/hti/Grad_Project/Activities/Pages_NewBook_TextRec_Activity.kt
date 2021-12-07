@@ -77,6 +77,7 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
         //Clicks Handling
         bt_SavePDFTOFirebase_OCR.setOnClickListener {
             openDialogSaveBook()
+
         }
 
         bt_back_OCR.setOnClickListener {
@@ -95,6 +96,9 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
                 .document("UsersBooks")
                 .collection(mAuth?.currentUser?.uid.toString()).document(bookName).set(booksMap)
                 .addOnSuccessListener {
+                    startActivity(Intent(this, MyBooks_Activity::class.java))
+                    finishAffinity()
+
                     Toast.makeText(
                         this,
                         "Your Book Saved Successfully",

@@ -17,6 +17,7 @@ import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity;
 import com.hti.Grad_Project.Model.book_Model;
 import com.hti.Grad_Project.Model.book_page_Model;
 import com.hti.Grad_Project.R;
+import com.hti.Grad_Project.Utilities.Constants;
 
 import java.util.List;
 import java.util.Objects;
@@ -70,11 +71,9 @@ public class book_adapter extends RecyclerView.Adapter<VH_BookSaved> {
     }
 
     private void deleteBook(book_Model book, int position) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth mAuth;
-        mAuth = FirebaseAuth.getInstance();
 
-        db.collection("UsersBooks").document("UsersBooks").collection(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).document(book.getBookName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        Constants.GetFireStoneDb().collection("UsersBooks").document("UsersBooks").collection(Objects.requireNonNull(Constants.GetAuth().getCurrentUser()).getUid()).document(book.getBookName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(@NonNull Void unused) {
                 removeAt(position, list);

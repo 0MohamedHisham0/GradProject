@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity;
 import com.hti.Grad_Project.Model.book_page_Model;
+import com.hti.Grad_Project.Utilities.Constants;
 import com.hti.Grad_Project.Utilities.passUriToActivity;
 import com.hti.Grad_Project.R;
 
@@ -146,16 +147,12 @@ public class page_adapter extends RecyclerView.Adapter<VH_OCR> {
 
     //DeleteItem
     private void deletePage(book_page_Model page, int position) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth mAuth;
-        mAuth = FirebaseAuth.getInstance();
 
-        //
         Map<String, Object> updates = new HashMap<>();
         updates.put(page.getPageNum(), FieldValue.delete());
 
         if (!bookName.equals("")) {
-            DocumentReference documentReference = db.collection("UsersBooks").document("UsersBooks").collection(mAuth.getCurrentUser().getUid()).document(bookName);
+            DocumentReference documentReference = Constants.GetFireStoneDb().collection("UsersBooks").document("UsersBooks").collection(Constants.GetAuth().getCurrentUser().getUid()).document(bookName);
             documentReference.update(updates).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(@NonNull Void unused) {
