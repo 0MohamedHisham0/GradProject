@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hti.Grad_Project.Activities.Splash">
+    tools:context="com.hti.Grad_Project.Activities.Auth.Splash">
 
     <carbon.widget.ImageView
         android:id="@+id/MainLogo_Splash"

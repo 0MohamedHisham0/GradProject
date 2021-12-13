@@ -20,6 +20,10 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_my_saved_book">MySavedBookActivity</string>
     <string name="title_activity_book">BookActivity</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_test_compose">TestCompose</string>
+    <string name="title_activity_bottom_nav_container_screen">BottomNavContainer_Screen</string>
 
 
 </resources>

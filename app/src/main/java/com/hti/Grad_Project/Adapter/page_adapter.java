@@ -22,13 +22,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity;
 import com.hti.Grad_Project.Model.book_page_Model;
 import com.hti.Grad_Project.Utilities.Constants;
+import com.hti.Grad_Project.Utilities.ConstantsBottomNav;
 import com.hti.Grad_Project.Utilities.passUriToActivity;
 import com.hti.Grad_Project.R;
 

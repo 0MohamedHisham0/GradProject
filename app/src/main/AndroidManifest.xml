@@ -17,47 +17,48 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GradProject">
         <activity
+            android:name=".Activities.BottomNavContainerScreen"
+            android:exported="false"
+            android:label="@string/title_activity_bottom_nav_container_screen"
+            android:theme="@style/Theme.GradProject.NoActionBar" />
+        <activity
+            android:name=".Activities.TestCompose"
+            android:exported="true"
+            android:label="@string/title_activity_test_compose"
+            android:theme="@style/Theme.GradProject.NoActionBar"></activity>
+        <activity
             android:name=".Activities.BookActivity"
             android:exported="true"
             android:label="@string/title_activity_book"
-            android:theme="@style/Theme.GradProject.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.GradProject.NoActionBar" />
         <activity
             android:name=".Activities.MyBooks_Activity"
             android:exported="true"
             android:label="@string/title_activity_my_saved_book"
-            android:theme="@style/Theme.GradProject.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.GradProject.NoActionBar" />
         <activity
             android:name=".Activities.Pages_NewBook_TextRec_Activity"
-            android:exported="true">
-
-
-        </activity>
-
+            android:exported="true" />
         <activity
             android:name=".Activities.BaseActivity"
             android:exported="false"
             android:label="@string/title_activity_base"
             android:theme="@style/Theme.GradProject.NoActionBar" />
         <activity
-            android:name=".Activities.RegisterActivity"
+            android:name=".Activities.Auth.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".Activities.LoginActivity"
-            android:exported="true" />
-        <activity
-            android:name=".Activities.Splash"
+            android:name=".Activities.Auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <activity
+            android:name=".Activities.Auth.Splash"
+            android:exported="true" />
     </application>
 
 </manifest>

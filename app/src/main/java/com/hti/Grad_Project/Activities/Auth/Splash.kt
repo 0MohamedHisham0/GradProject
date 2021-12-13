@@ -1,4 +1,4 @@
-package com.hti.Grad_Project.Activities
+package com.hti.Grad_Project.Activities.Auth
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity

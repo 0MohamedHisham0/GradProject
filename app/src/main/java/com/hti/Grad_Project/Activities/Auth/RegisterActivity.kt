@@ -1,4 +1,4 @@
-package com.hti.Grad_Project.Activities
+package com.hti.Grad_Project.Activities.Auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.text.TextWatcher
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.hti.Grad_Project.Activities.BaseActivity
+import com.hti.Grad_Project.Activities.BottomNavContainerScreen
 import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.activity_register.*
 
@@ -182,7 +184,7 @@ class RegisterActivity : BaseActivity() {
 
     private fun updateUserInfoAndUI() {
         //start next activity
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, BottomNavContainerScreen::class.java)
         startActivity(intent)
         finishAffinity()
     }

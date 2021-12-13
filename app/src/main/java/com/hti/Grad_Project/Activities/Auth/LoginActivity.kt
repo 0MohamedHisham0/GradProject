@@ -1,4 +1,4 @@
-package com.hti.Grad_Project.Activities
+package com.hti.Grad_Project.Activities.Auth
 
 import android.content.Context
 import android.content.Intent
@@ -11,6 +11,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.hti.Grad_Project.Activities.BaseActivity
+import com.hti.Grad_Project.Activities.BottomNavContainerScreen
+import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity
 import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -19,8 +22,8 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        if (mAuth?.currentUser?.uid != null){
-            startActivity(Intent(this, Pages_NewBook_TextRec_Activity::class.java))
+        if (mAuth?.currentUser?.uid != null) {
+            startActivity(Intent(this, BottomNavContainerScreen::class.java))
             finishAffinity()
         }
 
@@ -105,7 +108,7 @@ class LoginActivity : BaseActivity() {
             mDatabaseReference?.child("Users")?.child(it.uid)
                 ?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val intent = Intent(context, Pages_NewBook_TextRec_Activity::class.java)
+                        val intent = Intent(context, BottomNavContainerScreen::class.java)
                         startActivity(intent)
                         finishAffinity()
                     }
