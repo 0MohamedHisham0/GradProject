@@ -3,6 +3,7 @@ package com.hti.Grad_Project.Activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.compose.material.MaterialTheme
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hti.Grad_Project.Adapter.book_adapter
 import com.hti.Grad_Project.Model.book_Model
@@ -20,8 +21,8 @@ class MyBooks_Activity : BaseActivity() {
 
         getUsersBooks()
         bt_back_SavedBook.setOnClickListener {
-            startActivity(Intent(this, Pages_NewBook_TextRec_Activity::class.java))
-            finishAffinity()
+            startActivity(Intent(this, BottomNavContainerScreen::class.java))
+            finish()
         }
     }
 

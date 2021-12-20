@@ -81,8 +81,7 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
         }
 
         bt_back_OCR.setOnClickListener {
-            startActivity(Intent(this, MyBooks_Activity::class.java))
-            finishAffinity()
+            onBackPressed()
         }
 
     }
@@ -97,7 +96,7 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
                 .collection(mAuth?.currentUser?.uid.toString()).document(bookName).set(booksMap)
                 .addOnSuccessListener {
                     startActivity(Intent(this, MyBooks_Activity::class.java))
-                    finishAffinity()
+                    finish()
 
                     Toast.makeText(
                         this,
@@ -213,8 +212,8 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
         }
 
         dialog.bt_save_BookNameDialog.setOnClickListener {
-            addBookToFireBase(dialog.et_bookName_BookNameDialog.text.toString(), pdfList)
             dialog.dismiss()
+            addBookToFireBase(dialog.et_bookName_BookNameDialog.text.toString(), pdfList)
         }
         dialog.setTitle("BookName")
         dialog.show()

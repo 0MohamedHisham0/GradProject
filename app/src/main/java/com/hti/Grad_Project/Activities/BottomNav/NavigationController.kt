@@ -26,18 +26,21 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.composebottomnavigation.screen.*
 import com.hti.Grad_Project.Activities.BottomNav.BottomNavScreenDataModel.Items.items
+import com.hti.Grad_Project.Activities.Category
+import com.hti.Grad_Project.Activities.Home
+import com.hti.Grad_Project.Activities.HomeScreen
 import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.ConstantsBottomNav.ROUTE_CATEGORY
 import com.hti.Grad_Project.Utilities.ConstantsBottomNav.ROUTE_HOME
 import com.hti.Grad_Project.Utilities.ConstantsBottomNav.ROUTE_SAVED_BOOKS
 import com.hti.Grad_Project.Utilities.ConstantsBottomNav.ROUTE_SETTING
+import kotlinx.coroutines.flow.combine
 
+@ExperimentalMaterialApi
 @Composable
 fun NavigationController() {
-
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -97,8 +100,10 @@ fun NavigationController() {
     ) {
         ScreenController(navController = navController)
     }
+
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun ScreenController(navController: NavHostController) {
     NavHost(navController = navController, startDestination = ROUTE_HOME) {

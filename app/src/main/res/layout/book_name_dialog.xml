@@ -11,16 +11,16 @@
         android:id="@+id/et_bookName_BookNameDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
         android:background="?attr/colorOnSecondary"
         android:gravity="center"
         android:hint="Book Name"
+        android:inputType="text"
         android:padding="20dp"
         app:carbon_cornerRadius="20sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="20dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <carbon.widget.Button
         android:id="@+id/bt_save_BookNameDialog"

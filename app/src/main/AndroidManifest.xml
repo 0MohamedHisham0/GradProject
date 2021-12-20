@@ -17,6 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GradProject">
         <activity
+            android:name=".Activities.QuestionActivity"
+            android:exported="false"
+            android:label="@string/title_activity_question"
+            android:theme="@style/Theme.GradProject.NoActionBar" />
+        <activity
             android:name=".Activities.BottomNavContainerScreen"
             android:exported="false"
             android:label="@string/title_activity_bottom_nav_container_screen"
@@ -25,7 +30,7 @@
             android:name=".Activities.TestCompose"
             android:exported="true"
             android:label="@string/title_activity_test_compose"
-            android:theme="@style/Theme.GradProject.NoActionBar"></activity>
+            android:theme="@style/Theme.GradProject.NoActionBar" />
         <activity
             android:name=".Activities.BookActivity"
             android:exported="true"

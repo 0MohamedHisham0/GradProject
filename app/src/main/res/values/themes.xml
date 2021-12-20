@@ -10,6 +10,7 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#121212</item>
         <item name="colorOnSecondary">#ffff</item>
+        <item name="colorOnPrimary">@color/white</item>
 
     </style>
 

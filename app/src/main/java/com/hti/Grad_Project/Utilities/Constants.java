@@ -9,9 +9,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hti.Grad_Project.Model.UserModel;
 
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class Constants {
@@ -38,6 +40,8 @@ public class Constants {
 
         return db;
     }
+
+
 
     public static DatabaseReference GetRef() {
 
@@ -71,7 +75,6 @@ public class Constants {
         }
         return false;
     }
-
 
 
 }
