@@ -1,5 +1,7 @@
 package com.hti.Grad_Project.Activities
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,29 +21,51 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hti.Grad_Project.LocalData.categoryList
-import com.hti.Grad_Project.Model.CategoryModel
+import androidx.lifecycle.LiveData
+import com.google.firebase.auth.FirebaseAuth
+import com.hti.Grad_Project.Model.Pdf_Model
 import com.hti.Grad_Project.R
+import com.hti.Grad_Project.Utilities.Constants
+import com.hti.Grad_Project.Utilities.MainViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
 @ExperimentalMaterialApi
 @Composable
 fun Category() {
+    val mainViewModel = MainViewModel()
+
+    val context = LocalContext.current
+    mainViewModel.getUserBooks(context)
+    
     CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
-        CategoryScreen()
+        if (Constants.checkInternetConnection(context))
+            getBookListLiveData(personListLiveData = mainViewModel.bookList)
+        else
+            snackBarDemo()
     }
 }
 
+@ExperimentalMaterialApi
+@Composable
+fun getBookListLiveData(
+    personListLiveData: LiveData<List<Pdf_Model>>
+) {
+
+    val pdfList by personListLiveData.observeAsState(initial = emptyList())
+    if (pdfList.isEmpty()) {
+        Loading()
+    } else {
+        CategoryScreen(pdfList)
+    }
+}
 
 @ExperimentalMaterialApi
 @Composable
-fun CategoryScreen() {
+fun CategoryScreen(pdfList: List<Pdf_Model>) {
     val context = LocalContext.current
 
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
@@ -51,12 +76,11 @@ fun CategoryScreen() {
         scaffoldState = scaffoldState,
 
         content = {
-            Body(
-                onButtonSearchClicked = {
+            Body(onButtonSearchClicked = {
 
                     coroutineScope.launch {
                     }
-                })
+                },pdfList)
         },
         drawerContent = {
             DrawerHome(context = context)
@@ -70,6 +94,7 @@ fun CategoryScreen() {
                         setShowDialog(true)
                     }
 
+
                 }) {
                 DialogAddingNewCategory(showDialog, setShowDialog)
                 Text(text = "+", fontSize = 23.sp)
@@ -81,12 +106,12 @@ fun CategoryScreen() {
 
 @ExperimentalMaterialApi
 @Composable
-fun Body(onButtonSearchClicked: () -> Unit): String {
+fun Body(onButtonSearchClicked: () -> Unit,pdfList: List<Pdf_Model>): String {
 
     var textFieldState by remember {
         mutableStateOf("")
     }
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -139,35 +164,27 @@ fun Body(onButtonSearchClicked: () -> Unit): String {
 
         Divider(color = Color.DarkGray, thickness = 1.dp)
 
-        SearchForCategory(searchedText = textFieldState)
+        SearchForCategory(searchedText = textFieldState, context = context,pdfList)
 
     }
     return textFieldState;
 }
 
+
+@ExperimentalMaterialApi
 @Composable
-fun CategoryLazyList(selectedItem: (CategoryModel) -> Unit) {
-
-    val list = remember { categoryList.categoryList }
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
-    ) {
-        items(list) { category ->
-            ItemCategory(category = category)
-        }
-    }
-
-}
-
-@Composable
-fun ItemCategory(category: CategoryModel) {
-
+fun ItemCategory(pdf: Pdf_Model, context: Context) {
     Card(
         modifier = Modifier
             .padding(all = 5.dp)
             .fillMaxWidth(),
         elevation = 10.dp,
-        shape = RoundedCornerShape(corner = CornerSize(15.dp))
+        shape = RoundedCornerShape(corner = CornerSize(15.dp)),
+        onClick = {
+            val intent = Intent(context, QuestionActivity::class.java)
+            intent.putExtra("pdfModel", pdf)
+            context.startActivity(intent)
+        }
     ) {
         Column() {
             Row(
@@ -184,12 +201,12 @@ fun ItemCategory(category: CategoryModel) {
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    Text(text = category.categoryName, maxLines = 2, fontSize = 18.sp)
+                    Text(text = pdf.title, maxLines = 2, fontSize = 18.sp)
 
                     Spacer(modifier = Modifier.height(3.dp))
 
                     Text(
-                        text = "${category.booksList.size.toString()} Book",
+                        text = pdf.file,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = Color.LightGray,
@@ -205,32 +222,72 @@ fun ItemCategory(category: CategoryModel) {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
-fun SearchForCategory(searchedText: String) {
-    val list = remember { categoryList.categoryList }
-    var filteredList: List<CategoryModel>
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
-    ) {
-        filteredList = if (searchedText.isEmpty()) {
-            list
-        } else {
-            val resultList = mutableListOf<CategoryModel>()
-            for (category in list) {
-                if (category.categoryName.lowercase(Locale.getDefault())
-                        .contains(searchedText.lowercase(Locale.getDefault()))
-                ) {
-                    resultList.add(category)
-                }
+fun SearchForCategory(searchedText: String, context: Context, pdfList: List<Pdf_Model>) {
+
+    val id: String = FirebaseAuth.getInstance().currentUser!!.uid
+    
+    var filteredList: List<Pdf_Model>
+
+    LazyColumn(contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)) {
+        
+    filteredList = if (searchedText.isEmpty()) {
+        pdfList
+    } else {
+        val resultList = mutableListOf<Pdf_Model>()
+        for (pdf in pdfList) {
+            if (pdf.title.lowercase(Locale.getDefault())
+                    .contains(searchedText.lowercase(Locale.getDefault()))
+            ) {
+                resultList.add(pdf)
             }
-            resultList
         }
-        items(filteredList) { filteredList ->
-            ItemCategory(category = filteredList)
-        }
+        resultList
+    }
+
+    items(filteredList) { filteredList ->
+        ItemCategory(pdf = filteredList,context)
+    }
+
     }
 }
 
+
+//fun getBookList(context: Context): LiveData<List<Pdf_Model>> {
+//    var pdf: Map<String, Any> = HashMap()
+//    val pdfList = mutableListOf<Pdf_Model>()
+//    val pdfListLiveData = MutableLiveData<List<Pdf_Model>>()
+//
+//    Constants.GetFireStoneDb()?.collection("UsersBooks")!!
+//        .document("UsersPdf")
+//        .collection(Constants.GetAuth()?.currentUser?.uid.toString())
+//        .get().addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                for (document in task.result) {
+//                    pdf = document.data
+//
+//                    val model: Pdf_Model = Pdf_Model()
+//                    model.title = pdf.get("title").toString()
+//                    model.file = pdf.get("file").toString()
+//                    model.id = pdf.get("id").toString().toInt()
+//
+//                    pdfList.add(model)
+//
+//                }
+//                pdfListLiveData.postValue(pdfList)
+//
+//            } else {
+//                Toast.makeText(
+//                    context,
+//                    "" + task.exception!!.message,
+//                    Toast.LENGTH_SHORT
+//                )
+//                    .show()
+//            }
+//        }
+//    return pdfListLiveData
+//}
 
 @Composable
 fun DialogAddingNewCategory(showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
@@ -296,3 +353,5 @@ fun DialogAddingNewCategory(showDialog: Boolean, setShowDialog: (Boolean) -> Uni
         )
     }
 }
+
+

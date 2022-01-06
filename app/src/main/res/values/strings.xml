@@ -25,6 +25,8 @@
     <string name="title_activity_test_compose">TestCompose</string>
     <string name="title_activity_bottom_nav_container_screen">BottomNavContainer_Screen</string>
     <string name="title_activity_question">QuestionActivity</string>
+    <string name="title_activity_answers">AnswersActivity</string>
+    <string name="title_activity_pdf_viwer">PdfViwerActivity</string>
 
 
 </resources>

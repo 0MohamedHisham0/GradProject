@@ -70,10 +70,9 @@ public class book_adapter extends RecyclerView.Adapter<VH_BookSaved> {
 
     private void deleteBook(book_Model book, int position) {
 
-
         Constants.GetFireStoneDb().collection("UsersBooks").document("UsersBooks").collection(Objects.requireNonNull(Constants.GetAuth().getCurrentUser()).getUid()).document(book.getBookName()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(@NonNull Void unused) {
+            public void onSuccess(  @NonNull Void unused) {
                 removeAt(position, list);
             }
         });

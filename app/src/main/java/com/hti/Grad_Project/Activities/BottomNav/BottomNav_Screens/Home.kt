@@ -1,10 +1,17 @@
 package com.hti.Grad_Project.Activities
 
+import android.content.ActivityNotFoundException
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,31 +39,41 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat.finishAffinity
-import androidx.core.content.ContextCompat.startActivity
-import com.google.android.gms.tasks.OnSuccessListener
+import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.database.DataSnapshot
 import com.hti.Grad_Project.Activities.Auth.LoginActivity
-import com.hti.Grad_Project.Activities.BottomNav.NavigationController
 import com.hti.Grad_Project.LocalData.drawerList
 import com.hti.Grad_Project.LocalData.localBookList
 import com.hti.Grad_Project.Model.LocalBookModel
+import com.hti.Grad_Project.Model.Pdf_Model
 import com.hti.Grad_Project.Model.UserModel
+import com.hti.Grad_Project.Network.Remote.RetrofitClient
 import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.Constants
+import com.hti.Grad_Project.Utilities.FileUtils
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
+
 
 @ExperimentalMaterialApi
 @Composable
 fun Home() {
-    CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
-        HomeScreen()
-    }
+    val context = LocalContext.current
+    if (Constants.checkInternetConnection(context))
+        CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
+            HomeScreen()
+        }
+    else
+        snackBarDemo()
+
 }
 
+@Composable
 @ExperimentalMaterialApi
 @Preview
-@Composable
 fun Preview() {
     HomeScreen()
 }
@@ -88,13 +105,9 @@ fun HomeScreen() {
                     )
                 },
                 onUploadPdfClicked = {
-                    context.startActivity(
-                        Intent(
-                            context,
-                            QuestionActivity::class.java
-                        )
-                    )
-                })
+
+                }
+            )
         },
         drawerContent = {
             DrawerHome(context = context)
@@ -106,10 +119,12 @@ fun HomeScreen() {
 @ExperimentalMaterialApi
 @Composable
 fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked: () -> Unit) {
-
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     var textFieldState by remember {
         mutableStateOf("")
     }
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -241,8 +256,11 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
                 modifier = Modifier
                     .padding(10.dp)
                     .clickable(
-                        onClick =
-                        onUploadPdfClicked
+                        onClick = {
+                            coroutineScope.launch {
+                                setShowDialog(true)
+                            }
+                        }
                     )
             ) {
                 Image(
@@ -268,6 +286,7 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
 
 
         }
+        DialogAddingNewPDF(showDialog, setShowDialog, context)
 
     }
 }
@@ -459,14 +478,247 @@ object RippleCustomTheme : RippleTheme {
     @Composable
     override fun defaultColor() =
         RippleTheme.defaultRippleColor(
-            Color.Black,
+            Color.LightGray,
             lightTheme = true
         )
 
     @Composable
     override fun rippleAlpha(): RippleAlpha =
         RippleTheme.defaultRippleAlpha(
-            Color.Black,
+            Color.LightGray,
             lightTheme = true
         )
 }
+
+@Preview
+@Composable
+fun ShowDialog() {
+
+}
+
+@Composable
+fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, context: Context) {
+    var textFieldState by remember {
+        mutableStateOf("")
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                Toast.makeText(context, "You Didn't save any pdf!", Toast.LENGTH_SHORT).show()
+            },
+            confirmButton = {
+
+            },
+            dismissButton = {
+
+            },
+            text = {
+                var bookName by remember { mutableStateOf("Upload Pdf") }
+                var Uri: Uri = Uri.EMPTY
+
+                val launcher =
+                    rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
+                        if (uri != null) {
+                            Uri = uri
+                            val documentFile = DocumentFile.fromSingleUri(context, uri)
+                            bookName = documentFile?.name.toString()
+                        }
+
+                    }
+
+                fun selectDocument() {
+                    try {
+                        launcher.launch(("application/pdf"))
+                    } catch (ex: ActivityNotFoundException) {
+                        Log.e(ContentValues.TAG, "Couldn't start an activity to pick a document")
+                    }
+
+                }
+
+                fun isLetters(string: String): Boolean {
+                    return string.none {
+                        it !in 'A'..'Z' && it !in 'a'..'z' && it !in '0'..'9' && it !in '0'..'9' && it !in charArrayOf(
+                            '.',
+                            '$',
+                            '!',
+                            '+',
+                            '-',
+                            '_',
+                            ' ',
+                            '(',
+                            ')'
+                        )
+                    }
+                }
+
+                fun urlToTimeStamp(link: String): String {
+                    val idStr: String = link.substring(link.lastIndexOf("/media/") + 7)
+                    val last = idStr.substring(idStr.lastIndexOf("/"))
+                    val done = idStr.replace(last, "")
+                    return done
+                }
+
+                fun savePdfToFB(model: Pdf_Model) {
+                    Constants.GetFireStoneDb()?.collection("UsersBooks")!!
+                        .document("UsersPdf")
+                        .collection(Constants.GetAuth()?.currentUser?.uid.toString())
+                        .document(urlToTimeStamp(model.file)).set(model)
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                context,
+                                "Successfully upload Pdf",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }
+
+                fun savePdfToApiAndFB(uri: Uri) {
+                    if (Uri != android.net.Uri.EMPTY && bookName != "Upload Pdf") {
+                        try {
+                            val file = File(FileUtils.getPath(uri, context))
+
+                            if (isLetters(file.name)) {
+                                RetrofitClient.getInstance().postNewBook(file, bookName)
+                                    .enqueue(object : Callback<Pdf_Model?> {
+                                        override fun onResponse(
+                                            call: Call<Pdf_Model?>,
+                                            response: Response<Pdf_Model?>
+                                        ) {
+                                            if (response.isSuccessful && response.code() == 201) {
+
+                                                val model: Pdf_Model? = response.body()
+                                                savePdfToFB(model!!)
+
+                                            } else
+                                                Toast.makeText(
+                                                    context,
+                                                    "Failed : ${response.message()}",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<Pdf_Model?>,
+                                            t: Throwable
+                                        ) {
+                                            Toast.makeText(
+                                                context,
+                                                "Failed ${t.message}",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                            Log.i("TAG", "onFailure: ${t.message}")
+                                        }
+
+                                    })
+
+                            } else
+                                Toast.makeText(
+                                    context,
+                                    "Pdf name must be with english letters or with numbers or use this symbol ( '.','!','+','-','_',' ','(',')') ",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                context,
+                                "Make sure that use main file manager",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+
+                    }
+
+                    if (bookName == "Upload Pdf") {
+                        Toast.makeText(context, "Enter PDF title first", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                    if (Uri == android.net.Uri.EMPTY) {
+                        Toast.makeText(
+                            context,
+                            "Browse you pdf to be uploaded",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                }
+
+                Column() {
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text("Adding New Pdf")
+
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    Button(
+                        shape = RoundedCornerShape(15.dp),
+                        onClick = {
+                            selectDocument()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(
+                                1.dp,
+                                color = colorResource(id = R.color.orange_main),
+                                shape = RoundedCornerShape(30)
+                            )
+                            .padding(start = 0.dp, end = 0.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.background),
+
+                        ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.pdf),
+                            contentDescription = "Icon"
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(bookName, maxLines = 2)
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Button(
+                            shape = RoundedCornerShape(15.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
+                            onClick = {
+                                savePdfToApiAndFB(Uri)
+
+                            },
+                        ) {
+                            Text("Save")
+                        }
+
+                        Spacer(modifier = Modifier.width(20.dp))
+
+                        Button(
+                            shape = RoundedCornerShape(15.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
+                            onClick = {
+                                // Change the state to close the dialog
+                                setShowDialog(false)
+                            },
+                        ) {
+                            Text("Dismiss")
+                        }
+
+                    }
+
+
+                }
+
+            },
+        )
+
+
+    }
+
+}
+

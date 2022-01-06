@@ -15,10 +15,15 @@ import com.hti.Grad_Project.Activities.BaseActivity
 import com.hti.Grad_Project.Activities.BottomNavContainerScreen
 import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity
 import com.hti.Grad_Project.R
+import com.hti.Grad_Project.Utilities.Constants
 import kotlinx.android.synthetic.main.activity_login.*
 
+
 class LoginActivity : BaseActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
@@ -84,13 +89,14 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun loginUser() {
-        var email = EditText_Email_SignIn.text.toString()
-        var password = EditText_Pass_Login.text.toString()
+        val email = EditText_Email_SignIn.text.toString()
+        val password = EditText_Pass_Login.text.toString()
         mAuth!!.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
 //                        spin_kit_QS.visibility = View.GONE
                     // Sign in success, update UI with signed-in user's information
+                        Constants.saveUserID(this,Constants.userId)
                     Toast.makeText(
                         this, "Login successfully",
                         Toast.LENGTH_SHORT

@@ -2,7 +2,8 @@ package com.hti.Grad_Project
 
 import org.junit.Test
 
-import org.junit.Assert.*
+
+
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,6 +13,13 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        val link : String = ""
+        val idStr: String = link.substring(link.lastIndexOf("/media/") + 7)
+        val last = idStr.substring(idStr.lastIndexOf("/"))
+        val done = idStr.replace(last, "")
+        print(done)
+        print(idStr)
     }
+
+
 }

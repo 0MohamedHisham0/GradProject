@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.hti.Grad_Project">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -7,15 +8,33 @@
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.GradProject">
+        android:theme="@style/Theme.GradProject"
+        android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".Activities.PdfViwerActivity"
+            android:exported="true"
+            android:label="@string/title_activity_pdf_viwer"
+            android:theme="@style/Theme.GradProject.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".Activities.AnswersActivity"
+            android:exported="false"
+            android:label="@string/title_activity_answers"
+            android:theme="@style/Theme.GradProject.NoActionBar" />
         <activity
             android:name=".Activities.QuestionActivity"
             android:exported="false"
@@ -55,15 +74,20 @@
         <activity
             android:name=".Activities.Auth.LoginActivity"
             android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".Activities.Auth.Splash"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Activities.Auth.Splash"
-            android:exported="true" />
+
+
     </application>
+
 
 </manifest>
