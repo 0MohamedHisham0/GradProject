@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
+import androidx.compose.material.ExperimentalMaterialApi
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hti.Grad_Project.Activities.BaseActivity
@@ -13,6 +14,7 @@ import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : BaseActivity() {
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -32,6 +34,7 @@ class RegisterActivity : BaseActivity() {
 
     }
 
+    @ExperimentalMaterialApi
     private fun CheckDataInput(
         ed_email: TextInputEditText,
         ed_name: TextInputEditText,
@@ -155,6 +158,7 @@ class RegisterActivity : BaseActivity() {
         })
     }
 
+    @ExperimentalMaterialApi
     private fun createNewAccount(email: String, password: String, userName: String) {
         mAuth!!.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
@@ -182,6 +186,7 @@ class RegisterActivity : BaseActivity() {
             }
     }
 
+    @ExperimentalMaterialApi
     private fun updateUserInfoAndUI() {
         //start next activity
         val intent = Intent(this, BottomNavContainerScreen::class.java)

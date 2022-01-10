@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
+import androidx.compose.material.ExperimentalMaterialApi
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : BaseActivity() {
 
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -48,6 +50,7 @@ class LoginActivity : BaseActivity() {
 
     }
 
+    @ExperimentalMaterialApi
     private fun CheckDataInput(ed_email: TextInputEditText, ed_password: TextInputEditText) {
         val email = ed_email.text.toString()
         val password = ed_password.text.toString()
@@ -91,6 +94,7 @@ class LoginActivity : BaseActivity() {
         })
     }
 
+    @ExperimentalMaterialApi
     private fun loginUser() {
         val email = EditText_Email_SignIn.text.toString()
         val password = EditText_Pass_Login.text.toString()
@@ -111,6 +115,7 @@ class LoginActivity : BaseActivity() {
 
     }
 
+    @ExperimentalMaterialApi
     private fun updateUI(context: Context) {
         mAuth?.currentUser?.let {
             mDatabaseReference?.child("Users")?.child(it.uid)
