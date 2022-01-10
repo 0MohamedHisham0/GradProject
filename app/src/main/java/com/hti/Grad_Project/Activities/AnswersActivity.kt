@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.RippleCustomTheme
 import com.hti.Grad_Project.Activities.ui.theme.ComposeBottomNavigationTheme
 import com.hti.Grad_Project.LocalData.answerList
 import com.hti.Grad_Project.Model.Answer_Model
@@ -38,13 +39,14 @@ import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
+@ExperimentalMaterialApi
 class AnswersActivity : ComponentActivity() {
     val mainViewModel by viewModels<MainViewModel>()
 
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
         setContent {
             val context = LocalContext.current
             val intent = (context as AnswersActivity).intent

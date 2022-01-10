@@ -4,7 +4,6 @@ package com.hti.Grad_Project.Network.Remote;
 import com.hti.Grad_Project.Model.AnswerList_Model;
 import com.hti.Grad_Project.Model.Pdf_Model;
 import com.hti.Grad_Project.Model.Pdf_List_Model;
-import com.hti.Grad_Project.Model.Answer_Model;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -20,13 +19,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private final static String BASE_URL = "http://fd97-45-240-188-98.ngrok.io";
+    private final static String BASE_URL = "http://b91e-45-240-189-104.ngrok.io/";
     private final RemoteDB_Dao remoteDB_dao;
     private static RetrofitClient retrofitClient;
     private static Retrofit retrofit;
 
     public RetrofitClient() {
-
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -48,7 +46,6 @@ public class RetrofitClient {
         return retrofitClient;
     }
 
-
     public Call<Pdf_List_Model> getAllBooks() {
         return remoteDB_dao.getAllBooks();
     }
@@ -61,16 +58,13 @@ public class RetrofitClient {
         return remoteDB_dao.getQuestionAnswer(question, predictions, model, book);
     }
 
-    public Call<Pdf_Model> postNewBook(File pdf,String title) throws UnsupportedEncodingException {
+    public Call<Pdf_Model> postNewBook(File pdf, String title) throws UnsupportedEncodingException {
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), pdf);
-        RequestBody Title = RequestBody.create(MediaType.parse("text/plain"), URLEncoder.encode(pdf.getName(), "utf-8"));
-
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", URLEncoder.encode(pdf.getName(), "utf-8"), requestBody);
 
-        return remoteDB_dao.postPdf(title, filePart);
+        return remoteDB_dao.postPdf(title.replace(".pdf", ""), filePart);
     }
-
 
 }
 

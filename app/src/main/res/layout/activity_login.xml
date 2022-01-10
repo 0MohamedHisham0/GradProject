@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="?attr/colorOnPrimary"
+
     android:layout_height="match_parent"
     tools:context="com.hti.Grad_Project.Activities.Auth.LoginActivity">
 
@@ -28,9 +30,9 @@
         android:id="@+id/tv2_Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:fontFamily="@font/poppins_regular"
-        android:text="Fill your details or continue with\nupload pdf or using ocr"
+        android:text="Fill your details or continue with\nor using ocr"
         android:textColor="@color/secondary"
         android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,32 +94,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_rememberME_Login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/TI_Pass_Login">
-
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/checkbox_RememberMe_SignIn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:buttonTint="@color/orange_main" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Remember me"
-            android:textColor="?attr/colorSecondary" />
-
-    </LinearLayout>
 
     <carbon.widget.Button
         android:id="@+id/bt_login"
@@ -133,7 +109,7 @@
         app:carbon_cornerRadius="16dp"
         app:carbon_rippleColor="@color/secondary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_rememberME_Login" />
+        app:layout_constraintTop_toBottomOf="@id/TI_Pass_Login" />
 
     <LinearLayout
         android:id="@+id/ll_tv3"
@@ -177,17 +153,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_tv3">
 
-        <carbon.widget.Button
-            android:id="@+id/bt_pdf_Login"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="50dp"
-            android:background="@drawable/ic_pdf"
-            android:drawablePadding="20sp"
-            app:carbon_cornerRadius="16dp"
-            app:carbon_rippleColor="@color/secondary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
 
         <carbon.widget.Button
             android:id="@+id/bt_ocr_Login"
@@ -198,7 +164,6 @@
             app:carbon_cornerRadius="16dp"
             app:carbon_rippleColor="@color/secondary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/bt_pdf_Login"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
     </LinearLayout>
 

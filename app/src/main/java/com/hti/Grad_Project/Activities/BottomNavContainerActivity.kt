@@ -6,8 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -15,27 +13,29 @@ import com.hti.Grad_Project.Activities.BottomNav.NavigationController
 import com.hti.Grad_Project.Activities.ui.theme.ComposeBottomNavigationTheme
 import com.hti.Grad_Project.Utilities.Constants
 
+@ExperimentalMaterialApi
 class BottomNavContainerScreen : ComponentActivity() {
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val context = LocalContext.current
-            if (Constants.checkInternetConnection(context))
-                ComposeBottomNavigationTheme {
-                    Surface(color = MaterialTheme.colors.background) {
-                        NavigationController()
+
+                val context = LocalContext.current
+                if (Constants.checkInternetConnection(context))
+                    ComposeBottomNavigationTheme {
+                        Surface(color = MaterialTheme.colors.background) {
+                            NavigationController()
+                        }
                     }
-                }
-            else
-                snackBarDemo()
+                else
+                    snackBarDemo()
+            }
         }
-    }
+
 }
 
 @Composable
 fun snackBarDemo() {
-    val snackbarHostState = remember{mutableStateOf(SnackbarHostState())}
+
     Snackbar(
         action = {
 

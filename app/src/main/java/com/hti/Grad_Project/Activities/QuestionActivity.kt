@@ -24,12 +24,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.RippleCustomTheme
 import com.hti.Grad_Project.Activities.ui.theme.ComposeBottomNavigationTheme
 import com.hti.Grad_Project.Model.Pdf_Model
 import com.hti.Grad_Project.Model.QuestionAsk_Model
 import com.hti.Grad_Project.R
 import java.util.*
 
+@ExperimentalMaterialApi
 class QuestionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class QuestionActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun ScaffoldQuestionScreen(
     onBackButtonClick: () -> Unit,
@@ -73,6 +76,7 @@ fun ScaffoldQuestionScreen(
         })
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun QuestionScreen(
     onBackButtonClick: () -> Unit,

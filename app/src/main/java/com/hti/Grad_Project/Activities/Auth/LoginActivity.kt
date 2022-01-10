@@ -13,7 +13,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.hti.Grad_Project.Activities.BaseActivity
 import com.hti.Grad_Project.Activities.BottomNavContainerScreen
-import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity
+import com.hti.Grad_Project.Activities.OCR_Activity
 import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.Constants
 import kotlinx.android.synthetic.main.activity_login.*
@@ -39,8 +39,11 @@ class LoginActivity : BaseActivity() {
         bt_login.setOnClickListener {
             CheckDataInput(ed_email = EditText_Email_SignIn, ed_password = EditText_Pass_Login)
         }
+
         bt_ocr_Login.setOnClickListener {
-            startActivity(Intent(this, Pages_NewBook_TextRec_Activity::class.java))
+            val i = Intent(this, OCR_Activity::class.java)
+            i.putExtra("fromLogin", "True")
+            startActivity(i)
         }
 
     }
@@ -94,9 +97,8 @@ class LoginActivity : BaseActivity() {
         mAuth!!.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-//                        spin_kit_QS.visibility = View.GONE
-                    // Sign in success, update UI with signed-in user's information
-                        Constants.saveUserID(this,Constants.userId)
+
+                    Constants.saveUserID(this, Constants.GetAuth().currentUser?.uid)
                     Toast.makeText(
                         this, "Login successfully",
                         Toast.LENGTH_SHORT

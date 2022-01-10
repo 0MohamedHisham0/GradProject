@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorOnPrimary"
     tools:context="com.hti.Grad_Project.Activities.Auth.RegisterActivity">
 
     <TextView
@@ -144,33 +145,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_rememberME_Register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/TI_PassConfirm_Register">
-
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/checkbox_RememberMe_Register"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:buttonTint="@color/orange_main"
-            tools:ignore="TouchTargetSizeCheck" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Remember me"
-            android:textColor="?attr/colorSecondary" />
-
-    </LinearLayout>
 
     <carbon.widget.Button
         android:id="@+id/bt_Register"
@@ -186,7 +160,7 @@
         app:carbon_cornerRadius="16dp"
         app:carbon_rippleColor="@color/secondary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_rememberME_Register" />
+        app:layout_constraintTop_toBottomOf="@id/TI_PassConfirm_Register" />
 
 
     <LinearLayout

@@ -9,6 +9,7 @@ plugins {
 }
 
 android {
+
     compileSdk 31
 
     defaultConfig {
@@ -119,5 +120,6 @@ dependencies {
     //Live Data
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.0-rc01'
 
-
+    //iText
+    implementation 'com.itextpdf:itextg:5.5.10'
 }

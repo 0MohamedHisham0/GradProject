@@ -1,4 +1,4 @@
-package com.hti.Grad_Project.Activities
+package com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens
 
 import android.content.ActivityNotFoundException
 import android.content.ContentValues
@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.database.DataSnapshot
 import com.hti.Grad_Project.Activities.Auth.LoginActivity
+import com.hti.Grad_Project.Activities.OCR_Activity
+import com.hti.Grad_Project.Activities.snackBarDemo
 import com.hti.Grad_Project.LocalData.drawerList
 import com.hti.Grad_Project.LocalData.localBookList
 import com.hti.Grad_Project.Model.LocalBookModel
@@ -56,6 +58,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.net.URLEncoder
 
 
 @ExperimentalMaterialApi
@@ -97,12 +100,9 @@ fun HomeScreen() {
                     }
                 },
                 onOcrClicked = {
-                    context.startActivity(
-                        Intent(
-                            context,
-                            Pages_NewBook_TextRec_Activity::class.java
-                        )
-                    )
+                    val i = Intent(context, OCR_Activity::class.java)
+                    i.putExtra("fromHome", "True")
+                    context.startActivity(i)
                 },
                 onUploadPdfClicked = {
 
@@ -125,7 +125,11 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
         mutableStateOf("")
     }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
-
+    Log.i(
+        "TAG", "Body: ${
+            URLEncoder.encode("Drsaraكشفرصدنهائىعلومحاسببرمحةالشبكا", "utf-8")
+        }"
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -336,13 +340,6 @@ fun DrawerHome(context: Context) {
     }
 }
 
-@Preview
-@Composable
-fun DrawerPreview() {
-    DrawerItem("Logout", R.drawable.icon_logout, TODO())
-
-}
-
 @Composable
 fun DrawerItem(itemName: String, icon: Int, context: Context) {
     Row(
@@ -359,9 +356,6 @@ fun DrawerItem(itemName: String, icon: Int, context: Context) {
                     Toast
                         .makeText(context, "Successfully Logout", Toast.LENGTH_SHORT)
                         .show()
-                }
-                if (itemName == "My Saved Books") {
-                    context.startActivity(Intent(context, MyBooks_Activity::class.java))
                 }
 
             }
@@ -471,7 +465,6 @@ fun ItemBookImage(book: LocalBookModel) {
     )
 }
 
-
 object RippleCustomTheme : RippleTheme {
 
     //Your custom implementation...
@@ -490,17 +483,8 @@ object RippleCustomTheme : RippleTheme {
         )
 }
 
-@Preview
-@Composable
-fun ShowDialog() {
-
-}
-
 @Composable
 fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, context: Context) {
-    var textFieldState by remember {
-        mutableStateOf("")
-    }
     if (showDialog) {
         AlertDialog(
             onDismissRequest = {
@@ -522,6 +506,23 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
                             Uri = uri
                             val documentFile = DocumentFile.fromSingleUri(context, uri)
                             bookName = documentFile?.name.toString()
+
+                            if (!FileUtils.isExternalStorageDocument(uri))
+                                Log.i(
+                                    "TAG", "DialogAddingNewPDF: ${
+                                        FileUtils.copyFileToInternalStorage(
+                                            uri,
+                                            "docsFromAW",
+                                            context
+                                        )
+                                    }"
+                                )
+                            else
+                                Log.i(
+                                    "TAG",
+                                    "DialogAddingNewPDF: ${FileUtils.getPath(uri, context)}"
+                                )
+
                         }
 
                     }
@@ -569,79 +570,94 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
                                 "Successfully upload Pdf",
                                 Toast.LENGTH_SHORT
                             ).show()
+
+                            setShowDialog(false)
+
                         }
                 }
 
                 fun savePdfToApiAndFB(uri: Uri) {
                     if (Uri != android.net.Uri.EMPTY && bookName != "Upload Pdf") {
-                        try {
-                            val file = File(FileUtils.getPath(uri, context))
 
-                            if (isLetters(file.name)) {
-                                RetrofitClient.getInstance().postNewBook(file, bookName)
-                                    .enqueue(object : Callback<Pdf_Model?> {
-                                        override fun onResponse(
-                                            call: Call<Pdf_Model?>,
-                                            response: Response<Pdf_Model?>
-                                        ) {
-                                            if (response.isSuccessful && response.code() == 201) {
-
-                                                val model: Pdf_Model? = response.body()
-                                                savePdfToFB(model!!)
-
-                                            } else
-                                                Toast.makeText(
-                                                    context,
-                                                    "Failed : ${response.message()}",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                        }
-
-                                        override fun onFailure(
-                                            call: Call<Pdf_Model?>,
-                                            t: Throwable
-                                        ) {
-                                            Toast.makeText(
-                                                context,
-                                                "Failed ${t.message}",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                            Log.i("TAG", "onFailure: ${t.message}")
-                                        }
-
-                                    })
-
-                            } else
-                                Toast.makeText(
-                                    context,
-                                    "Pdf name must be with english letters or with numbers or use this symbol ( '.','!','+','-','_',' ','(',')') ",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                        } catch (e: Exception) {
-                            Toast.makeText(
-                                context,
-                                "Make sure that use main file manager",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        Toast.makeText(
+                            context,
+                            "We are uploading you pdf, Please wait",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        val file: File = if (!FileUtils.isExternalStorageDocument(uri)) {
+                            val copedToEx = FileUtils.copyFileToInternalStorage(
+                                uri,
+                                "docsFromAW",
+                                context
+                            )
+                            File(copedToEx)
+                        } else {
+                            File(FileUtils.getPath(uri, context))
                         }
+
+                        RetrofitClient.getInstance().postNewBook(file, bookName)
+                            .enqueue(object : Callback<Pdf_Model?> {
+                                override fun onResponse(
+                                    call: Call<Pdf_Model?>,
+                                    response: Response<Pdf_Model?>
+                                ) {
+                                    if (response.isSuccessful && response.code() == 201) {
+
+                                        val model: Pdf_Model? = response.body()
+                                        savePdfToFB(model!!)
+
+                                    } else
+                                        Toast.makeText(
+                                            context,
+                                            "Failed : ${response.message()}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                }
+
+                                override fun onFailure(
+                                    call: Call<Pdf_Model?>,
+                                    t: Throwable
+                                ) {
+                                    Toast.makeText(
+                                        context,
+                                        "Failed ${t.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                    Log.i("TAG", "onFailure: ${t.message}")
+                                }
+
+                            })
+
+
+//                        try {
+//
+//                            if (isLetters(file.name)) {
+//
+//
+//                            } else
+//                                Toast.makeText(
+//                                    context,
+//                                    "Pdf name must be with english letters or with numbers or use this symbol ( '.','!','+','-','_',' ','(',')') ",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//
+//                        } catch (e: Exception) {
+//                            Toast.makeText(
+//                                context,
+//                                "Make sure that use main file manager",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
 
 
                     }
 
-                    if (bookName == "Upload Pdf") {
-                        Toast.makeText(context, "Enter PDF title first", Toast.LENGTH_SHORT)
+                    if (bookName == "Upload Pdf" || Uri == android.net.Uri.EMPTY) {
+                        Toast.makeText(context, "Browse you pdf to be uploaded", Toast.LENGTH_SHORT)
                             .show()
                     }
 
-                    if (Uri == android.net.Uri.EMPTY) {
-                        Toast.makeText(
-                            context,
-                            "Browse you pdf to be uploaded",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
 
                 }
 
@@ -685,18 +701,7 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Button(
-                            shape = RoundedCornerShape(15.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
-                            onClick = {
-                                savePdfToApiAndFB(Uri)
 
-                            },
-                        ) {
-                            Text("Save")
-                        }
-
-                        Spacer(modifier = Modifier.width(20.dp))
 
                         Button(
                             shape = RoundedCornerShape(15.dp),
@@ -708,7 +713,18 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
                         ) {
                             Text("Dismiss")
                         }
+                        Spacer(modifier = Modifier.width(20.dp))
 
+                        Button(
+                            shape = RoundedCornerShape(15.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
+                            onClick = {
+                                savePdfToApiAndFB(Uri)
+
+                            },
+                        ) {
+                            Text("Save")
+                        }
                     }
 
 

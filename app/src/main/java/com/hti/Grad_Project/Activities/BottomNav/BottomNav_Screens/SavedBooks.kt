@@ -1,4 +1,4 @@
-package com.example.composebottomnavigation.screen
+package com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

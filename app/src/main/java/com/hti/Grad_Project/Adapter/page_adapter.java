@@ -24,10 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
-import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity;
+import com.hti.Grad_Project.Activities.OCR_Activity;
 import com.hti.Grad_Project.Model.book_page_Model;
 import com.hti.Grad_Project.Utilities.Constants;
-import com.hti.Grad_Project.Utilities.ConstantsBottomNav;
 import com.hti.Grad_Project.Utilities.passUriToActivity;
 import com.hti.Grad_Project.R;
 
@@ -134,14 +133,14 @@ public class page_adapter extends RecyclerView.Adapter<VH_OCR> {
         mCallback.onCaptureImage(image_uri);
         Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         cameraIntent.putExtra("output", (Parcelable) image_uri);
-        ((Pages_NewBook_TextRec_Activity) context).startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
+        ((OCR_Activity) context).startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
 
     }
 
     //Open Gallery
     private void openGalleryToPickImage() {
         Intent galleryIntent = new Intent("android.intent.action.PICK", MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        ((Pages_NewBook_TextRec_Activity) context).startActivityForResult(galleryIntent, this.RESULT_LOAD_IMAGE);
+        ((OCR_Activity) context).startActivityForResult(galleryIntent, this.RESULT_LOAD_IMAGE);
     }
 
     //DeleteItem

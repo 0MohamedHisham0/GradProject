@@ -10,9 +10,11 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTRENAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
@@ -21,15 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GradProject"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
 
-        <activity
-            android:name=".Activities.PdfViwerActivity"
-            android:exported="true"
-            android:label="@string/title_activity_pdf_viwer"
-            android:theme="@style/Theme.GradProject.NoActionBar">
-
-        </activity>
         <activity
             android:name=".Activities.AnswersActivity"
             android:exported="false"
@@ -51,17 +47,7 @@
             android:label="@string/title_activity_test_compose"
             android:theme="@style/Theme.GradProject.NoActionBar" />
         <activity
-            android:name=".Activities.BookActivity"
-            android:exported="true"
-            android:label="@string/title_activity_book"
-            android:theme="@style/Theme.GradProject.NoActionBar" />
-        <activity
-            android:name=".Activities.MyBooks_Activity"
-            android:exported="true"
-            android:label="@string/title_activity_my_saved_book"
-            android:theme="@style/Theme.GradProject.NoActionBar" />
-        <activity
-            android:name=".Activities.Pages_NewBook_TextRec_Activity"
+            android:name=".Activities.OCR_Activity"
             android:exported="true" />
         <activity
             android:name=".Activities.BaseActivity"

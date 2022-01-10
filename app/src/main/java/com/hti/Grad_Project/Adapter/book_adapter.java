@@ -11,11 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.hti.Grad_Project.Activities.Pages_NewBook_TextRec_Activity;
+import com.hti.Grad_Project.Activities.OCR_Activity;
 import com.hti.Grad_Project.Model.book_Model;
 import com.hti.Grad_Project.R;
 import com.hti.Grad_Project.Utilities.Constants;
-import com.hti.Grad_Project.Utilities.ConstantsBottomNav;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +46,7 @@ public class book_adapter extends RecyclerView.Adapter<VH_BookSaved> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, Pages_NewBook_TextRec_Activity.class);
+                Intent intent = new Intent(context, OCR_Activity.class);
                 intent.putExtra("bookPages", model);
                 context.startActivity(intent);
             }

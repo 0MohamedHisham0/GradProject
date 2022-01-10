@@ -3,7 +3,7 @@ package com.hti.Grad_Project.Activities
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -11,26 +11,36 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.mlkit.vision.common.InputImage
-
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import com.hti.Grad_Project.Model.book_page_Model
-import com.hti.Grad_Project.R
-import kotlinx.android.synthetic.main.activity_text_recognation.*
-
-import java.io.IOException
-import androidx.recyclerview.widget.GridLayoutManager
 import com.hti.Grad_Project.Adapter.page_adapter
+import com.hti.Grad_Project.Model.Pdf_Model
 import com.hti.Grad_Project.Model.book_Model
+import com.hti.Grad_Project.Model.book_page_Model
+import com.hti.Grad_Project.Network.Remote.RetrofitClient
+import com.hti.Grad_Project.R
+import com.hti.Grad_Project.Utilities.Constants
 import com.hti.Grad_Project.Utilities.passUriToActivity
+import com.itextpdf.text.Document
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.pdf.PdfWriter
+import kotlinx.android.synthetic.main.activity_text_recognation.*
 import kotlinx.android.synthetic.main.book_name_dialog.*
 
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
-class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
+
+class OCR_Activity : BaseActivity(), passUriToActivity {
 
     private var image_uri: Uri? = null
     private val RESULT_LOAD_IMAGE = 123
@@ -40,15 +50,14 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
     private var booksMap = mutableMapOf<String, String>()
     private var oldBookOrNew = "NEW"
     private var bookName: String = ""
-
+    private lateinit var fromHome: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_recognation)
 
-
-        //Came from Old book
-
-        var i = intent?.getSerializableExtra("bookPages") as? (book_Model)
+        //Come from Old book
+        val i = intent?.getSerializableExtra("bookPages") as? (book_Model)
+        fromHome = intent?.getStringExtra("fromHome").toString()
 
         if (i != null) {
 
@@ -64,10 +73,10 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
 
         }
 
-        //if User is Authenticated
-        if (!mAuth?.currentUser?.uid?.isEmpty()!!) {
+        if (fromHome == "True") {
             bt_SavePDFTOFirebase_OCR.visibility = View.VISIBLE
         }
+
 
         //Ask for permission of camera upon first launch of application
         askPermissionInFirstTime()
@@ -76,7 +85,7 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
 
         //Clicks Handling
         bt_SavePDFTOFirebase_OCR.setOnClickListener {
-            openDialogSaveBook()
+            openDialogSaveBook("Save")
 
         }
 
@@ -84,34 +93,16 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
             onBackPressed()
         }
 
-    }
-
-    //Add Data To Store Firebase
-    private fun addBookToFireBase(bookName: String, list: MutableList<book_page_Model>) {
-        for (i in list) {
-            booksMap[i.pageNum] = i.mainText
-            list[0].mainText = bookName
-            mDatabaseFireStore?.collection("UsersBooks")!!
-                .document("UsersBooks")
-                .collection(mAuth?.currentUser?.uid.toString()).document(bookName).set(booksMap)
-                .addOnSuccessListener {
-                    startActivity(Intent(this, MyBooks_Activity::class.java))
-                    finish()
-
-                    Toast.makeText(
-                        this,
-                        "Your Book Saved Successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
+        bt_AskWithoutSaving_OCR.setOnClickListener {
+            openDialogSaveBook("Ask")
         }
+
     }
 
     //Recyclerview
     private fun initRv() {
         if (oldBookOrNew == "NEW")
-            addPageToRv("FirstPage")
+            addPageToRv("")
         rv_pdf_OCR.layoutManager = GridLayoutManager(this, 2)
         rv_pdf_OCR.adapter =
             page_adapter(this, pdfList, this, bookName)
@@ -203,17 +194,40 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
         image_uri = value
     }
 
-    private fun openDialogSaveBook() {
+    private fun openDialogSaveBook(buttonName: String) {
         val dialog = Dialog(this) // Context, this, etc.
         dialog.setContentView(R.layout.book_name_dialog)
+
+        dialog.bt_save_BookNameDialog.text = buttonName
 
         if (bookName != "") {
             dialog.et_bookName_BookNameDialog.setText(bookName)
         }
 
         dialog.bt_save_BookNameDialog.setOnClickListener {
+            val doc = Document()
+            val mfilepath =
+                "/data/user/0/com.hti.myapplication/files/docsFromAW/" + dialog.et_bookName_BookNameDialog.text.toString() + ".pdf"
+            val mfilepathDis =
+                "/data/user/0/com.hti.myapplication/files/" + dialog.et_bookName_BookNameDialog.text.toString() + ".pdf"
+
+            Log.i("TAG", "openDialogSaveBook: $mfilepath")
+            Log.i("TAG", "openDialogSaveBook: $mfilepathDis")
+
+            PdfWriter.getInstance(
+                doc,
+                FileOutputStream(mfilepath)
+            )
+            doc.open()
+            doc.add(Paragraph(getTextFromBook(pdfList)))
+            doc.close()
+
+            Constants.copy(File(mfilepath), File(mfilepathDis))
+            savePdfToApiAndFB(path = mfilepathDis, context = applicationContext)
+
+
             dialog.dismiss()
-            addBookToFireBase(dialog.et_bookName_BookNameDialog.text.toString(), pdfList)
+
         }
         dialog.setTitle("BookName")
         dialog.show()
@@ -222,51 +236,71 @@ class Pages_NewBook_TextRec_Activity : BaseActivity(), passUriToActivity {
 
     }
 
-    //Opens camera to capture image
-    private fun openCamera() {
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "New Picture")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
-    }
+    private fun savePdfToApiAndFB(path: String, context: Context) {
 
-    //Unused Fun
+        if (path.isNotEmpty()) {
+            val file = File(path)
+            RetrofitClient.getInstance().postNewBook(file, file.name)
+                .enqueue(object : Callback<Pdf_Model?> {
+                    override fun onResponse(
+                        call: Call<Pdf_Model?>,
+                        response: Response<Pdf_Model?>
+                    ) {
+                        if (response.isSuccessful && response.code() == 201) {
 
-    //BrowseImage From Phone
-    private fun openGalleryToPickImage() {
-        val galleryIntent =
-            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE)
-    }
+                            val model: Pdf_Model? = response.body()
+                            if (fromHome == "True") {
+                                savePdfToFB(model!!)
+                            }
 
-    private fun validateCameraPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_DENIED
-            ) {
-                val permission = arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+                        } else
+                            Toast.makeText(
+                                context,
+                                "Failed : ${response.message()}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                    }
 
+                    override fun onFailure(
+                        call: Call<Pdf_Model?>,
+                        t: Throwable
+                    ) {
+                        Toast.makeText(
+                            context,
+                            "Failed ${t.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
-                requestPermissions(permission, 121)
-            } else {
-                openCamera()
+                        Log.i("TAG", "onFailure: ${t.message}")
+                    }
 
-            }
+                })
         }
+
+
     }
 
+    fun savePdfToFB(model: Pdf_Model) {
+        Constants.GetFireStoneDb()?.collection("UsersBooks")!!
+            .document("UsersPdf")
+            .collection(Constants.GetAuth()?.currentUser?.uid.toString())
+            .document(urlToTimeStamp(model.file)).set(model)
+            .addOnSuccessListener {
+                Toast.makeText(
+                    applicationContext,
+                    "Successfully upload Pdf",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun getTextFromBook(list: List<book_page_Model>): String {
+        var pdfText = ""
+        for (i in list) {
+            pdfText += i.mainText
+        }
+
+        return pdfText
+    }
 }
-
-
-
-
-
 

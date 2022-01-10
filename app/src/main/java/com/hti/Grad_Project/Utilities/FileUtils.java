@@ -285,7 +285,7 @@ public class FileUtils {
      * @param newDirName if you want to create a directory, you can set this variable
      * @return
      */
-    private static String copyFileToInternalStorage(Uri uri, String newDirName, Context context) {
+    public static String copyFileToInternalStorage(Uri uri, String newDirName, Context context) {
         Uri returnUri = uri;
 
         Cursor returnCursor = context.getContentResolver().query(returnUri, new String[]{
@@ -360,7 +360,7 @@ public class FileUtils {
         return null;
     }
 
-    private static boolean isExternalStorageDocument(Uri uri) {
+    public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 

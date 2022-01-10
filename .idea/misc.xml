@@ -8,21 +8,28 @@
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/icon_book.xml" value="0.2712820512820513" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/icon_delete.xml" value="0.2755208333333333" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/icon_email.xml" value="0.2755208333333333" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/icon_history.xml" value="0.21296296296296297" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/icon_mic.xml" value="0.2755208333333333" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/icon_password.xml" value="0.2755208333333333" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/icon_search_bt.xml" value="0.21296296296296297" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/main_logo.xml" value="0.2755208333333333" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/drawable/shape_with_corners.xml" value="0.2755208333333333" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_book.xml" value="0.2453125" />
-        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_login.xml" value="0.4" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_login.xml" value="0.2" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_my_saved_book.xml" value="0.264" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_on_boarding.xml" value="0.259375" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_register.xml" value="0.264" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_splash.xml" value="0.264" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/activity_text_recognation.xml" value="0.264" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/book_item.xml" value="0.12697628458498023" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/book_name_dialog.xml" value="0.259375" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/book_page_item.xml" value="0.259375" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/content_base.xml" value="0.14895833333333333" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/content_book.xml" value="0.14895833333333333" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/pdf_item.xml" value="0.4" />
         <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/layout/saved_book_item.xml" value="0.4" />
+        <entry key="..\:/Android/AndroidProjects/GradProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.16510416666666666" />
       </map>
     </option>
   </component>
