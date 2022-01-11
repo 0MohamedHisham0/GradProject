@@ -12,6 +12,7 @@ import android.widget.Toast
 
 import android.content.Intent
 import android.os.Handler
+import com.hti.Grad_Project.Activities.OnboardingActivity
 
 
 class Splash : AppCompatActivity() {
@@ -23,7 +24,7 @@ class Splash : AppCompatActivity() {
             Handler().postDelayed(Runnable {
                 //This method will be executed once the timer is over
                 // Start your app main activity
-                val i = Intent(this, LoginActivity::class.java)
+                val i = Intent(this, OnboardingActivity::class.java)
                 startActivity(i)
                 finishAffinity()
 

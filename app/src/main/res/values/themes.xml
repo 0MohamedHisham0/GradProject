@@ -11,6 +11,7 @@
         <item name="colorSecondary">#121212</item>
         <item name="colorOnSecondary">#ffff</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimarySurface">#405467</item>
 
     </style>
 

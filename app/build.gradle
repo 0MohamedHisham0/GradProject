@@ -105,7 +105,7 @@ dependencies {
     //circular Progressbar https://github.com/ybq/Android-SpinKit
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
-    //EditText https://material.io/components/text-fields/android#using-text-fields
+    //EditText https://material.io/components/text-OnboardingExample4Activityfields/android#using-text-fields
     implementation 'com.google.android.material:material:<version>'
 
     // Retrofit https://square.github.io/retrofit/
@@ -123,4 +123,11 @@ dependencies {
 
     //iText
     implementation 'com.itextpdf:itextg:5.5.10'
+
+    //onboarding
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'com.airbnb.android:lottie:3.6.1'
+    implementation 'com.jaeger.statusbarutil:library:1.5.1'
+
+
 }

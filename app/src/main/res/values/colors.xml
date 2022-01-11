@@ -13,6 +13,14 @@
     <color name="secondary">#BABABA</color>
     <color name="green">#1ED760</color>
 
+
     <color name="LightGray">#A9A9A9</color>
+
+    <!--    color for onBoarding-->
+    <color name="dark_blue">#405467</color>
+    <color name="md_grey_300">#E0E0E0</color>
+    <color name="md_grey_100">#F5F5F5</color>
+    <color name="md_white_1000">#ffffff</color>
+    <color name="md_deep_orange_300">#FF8A65</color>
 
 </resources>

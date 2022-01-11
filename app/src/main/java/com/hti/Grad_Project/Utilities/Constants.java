@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.hti.Grad_Project.Model.UserModel;
 
 
 import java.io.File;
@@ -30,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class Constants {
@@ -72,6 +70,19 @@ public class Constants {
         sharedPreferences = activity.getSharedPreferences("UserId", Context.MODE_PRIVATE);
 
         return sharedPreferences.getString("UserId", "empty");
+    }
+    public static void saveUserFirstTime(Activity activity) {
+        sharedPreferences = activity.getSharedPreferences("UserFirstTime", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("UserFirstTime", "true");
+        editor.apply();
+    }
+
+    public static String getUserFirstTime(Activity activity) {
+        sharedPreferences = activity.getSharedPreferences("UserFirstTime", Context.MODE_PRIVATE);
+
+        return sharedPreferences.getString("UserFirstTime", "false");
     }
 
     public static DatabaseReference GetRef() {
