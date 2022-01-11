@@ -27,6 +27,7 @@
     <string name="title_activity_question">QuestionActivity</string>
     <string name="title_activity_answers">AnswersActivity</string>
     <string name="title_activity_pdf_viwer">PdfViwerActivity</string>
+    <string name="title_activity_question_history">QuestionHistoryActivity</string>
 
 
 </resources>

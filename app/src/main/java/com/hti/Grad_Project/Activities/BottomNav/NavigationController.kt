@@ -19,8 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import com.hti.Grad_Project.Activities.BottomNav.BottomNavScreenDataModel.Items.items
 import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.Home
 import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.MyPdf
+import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.MySavedQuestions
 import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.RippleCustomTheme
-import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.SavedBooks
 import com.hti.Grad_Project.Activities.ui.theme.ClearRippleTheme
 import com.hti.Grad_Project.Utilities.ConstantsBottomNav.ROUTE_CATEGORY
 import com.hti.Grad_Project.Utilities.ConstantsBottomNav.ROUTE_HOME
@@ -102,7 +102,7 @@ fun ScreenController(navController: NavHostController) {
             MyPdf()
         }
         composable(ROUTE_SAVED_BOOKS) {
-            SavedBooks()
+            MySavedQuestions()
         }
     }
 }

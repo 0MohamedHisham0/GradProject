@@ -1,9 +1,12 @@
 package com.hti.Grad_Project.Activities
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,13 +21,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
@@ -39,6 +42,7 @@ import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
 @ExperimentalMaterialApi
 class AnswersActivity : ComponentActivity() {
     val mainViewModel by viewModels<MainViewModel>()
@@ -60,7 +64,10 @@ class AnswersActivity : ComponentActivity() {
                         .fillMaxSize()
                 ) {
                     CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
-                        getAnswerLiveData(mainViewModel.answerListModel, questionModel)
+                        getAnswerLiveData(
+                            mainViewModel.answerListModel,
+                            questionModel
+                        )
                     }
 
 
@@ -76,14 +83,14 @@ class AnswersActivity : ComponentActivity() {
 @Composable
 fun getAnswerLiveData(
     personListLiveData: LiveData<List<Answer_Model>>,
-    questionModel: QuestionAsk_Model
+    questionaskModel: QuestionAsk_Model
 ) {
 
-    val personList by personListLiveData.observeAsState(initial = emptyList())
-    if (personList.isEmpty()) {
+    val answersList by personListLiveData.observeAsState(initial = emptyList())
+    if (answersList == null) {
         Loading()
     } else {
-        AnswerScreen(personList, questionModel)
+        AnswerScreen(answersList, questionaskModel)
     }
 }
 
@@ -104,23 +111,6 @@ fun Loading() {
     }
 }
 
-@ExperimentalMaterialApi
-@Preview("answer Preview")
-@Composable
-fun AnswersPreview() {
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
-
-            val questionModel = QuestionAsk_Model("What is your name?", "Bert", 10, "fieojfoejfe")
-            AnswerScreen(list = answerList.answerBertList, questionModel = questionModel)
-
-        }
-    }
-}
 
 @ExperimentalMaterialApi
 @Composable
@@ -129,7 +119,6 @@ fun AnswerScreen(
     questionModel: QuestionAsk_Model
 ) {
 
-    val question: String = questionModel.question
     val context = LocalContext.current
 
     val IsBertClicked = remember { mutableStateOf(true) }
@@ -142,6 +131,7 @@ fun AnswerScreen(
         answerList.answerBertList
     }
     val currentListSize = remember { mutableStateOf(questionModel.prediction) }
+    val question = remember { mutableStateOf(questionModel.question) }
 
 
     //Bottom Sheet
@@ -158,7 +148,14 @@ fun AnswerScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        TopBarAnswerScreen(onBackButtonClick = { /*TODO*/ }, ParagraphName = questionModel.question)
+        TopBarAnswerScreen(onBackButtonClick = {
+            context.startActivity(
+                Intent(
+                    context,
+                    QuestionActivity::class.java
+                )
+            )
+        }, ParagraphName = questionModel.question)
 
         Spacer(modifier = Modifier.height(60.dp))
 
@@ -193,13 +190,13 @@ fun AnswerScreen(
             list = list,
             scope = scope,
             modalBottomSheetState = modalBottomSheetState,
-            selectedItem = selectedItem
+            selectedItem = selectedItem, context
         )
         currentListSize.value = list.size
     }
 
     ModelBottomSheet(
-        scope = scope, modalBottomSheetState = modalBottomSheetState, selectedItem
+        scope = scope, modalBottomSheetState = modalBottomSheetState, selectedItem, context
     )
 
 }
@@ -210,24 +207,67 @@ fun AnswerScreen(
 fun ModelBottomSheet(
     scope: CoroutineScope,
     modalBottomSheetState: ModalBottomSheetState,
-    model: selectedItem
+    model: selectedItem, context: Context
 ) {
+    val iconColor = remember { mutableStateOf(R.color.LightGray) }
+    if (!modalBottomSheetState.isVisible)
+        iconColor.value = R.color.LightGray
+
     ModalBottomSheetLayout(
         sheetState = modalBottomSheetState,
         sheetContent = {
 
-            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(20.dp)),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Column(
                     Modifier
                         .padding(20.dp)
                         .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     //Diver
-                    Divider(
-                        color = Color.LightGray,
-                        thickness = 3.dp,
-                        modifier = Modifier.width(50.dp)
-                    )
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        Divider(
+                            color = Color.LightGray,
+                            thickness = 3.dp,
+                            modifier = Modifier
+                                .width(50.dp)
+                                .clip(RoundedCornerShape(13.dp))
+                        )
+                        Spacer(modifier = Modifier.width(120.dp))
+                        Column(
+                            modifier = Modifier.size(40.dp),
+
+                            ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_save),
+                                contentDescription = "SaveAnswer",
+                                tint = colorResource(iconColor.value),
+                                modifier = Modifier
+                                    .clickable {
+                                        val answerModel = Answer_Model(
+                                            model.query,
+                                            model.answer,
+                                            model.title,
+                                            model.paragraph,
+                                            model.aquarcy
+                                        )
+                                        MainViewModel().addNewQuestionFromView(
+                                            context,
+                                            answerModel
+                                        )
+                                        iconColor.value = R.color.orange_main
+                                    }
+                                    .size(40.dp)
+                                    .padding(start = 0.dp)
+                            )
+                        }
+
+                    }
+
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -301,13 +341,19 @@ fun AnswerLazyList(
     list: List<Answer_Model>,
     scope: CoroutineScope,
     modalBottomSheetState: ModalBottomSheetState,
-    selectedItem: selectedItem
+    selectedItem: selectedItem, context: Context
 ) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
     ) {
         items(list) { answer ->
-            ItemAnswer(answer = answer, scope, modalBottomSheetState, selectedItem)
+            ItemAnswer(
+                answer = answer,
+                scope,
+                modalBottomSheetState,
+                selectedItem,
+                context
+            )
         }
     }
 }
@@ -318,19 +364,23 @@ fun ItemAnswer(
     answer: Answer_Model,
     scope: CoroutineScope,
     modalBottomSheetState: ModalBottomSheetState,
-    selectedItem: selectedItem
+    selectedItem: selectedItem, context: Context
 ) {
+
     Card(
         modifier = Modifier
             .padding(all = 5.dp)
             .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
             .clickable(
                 onClick = {
                     scope.launch {
                         modalBottomSheetState.show()
 
-                        selectedItem.answer = answer.answer
+                        selectedItem.query = answer.query
                         selectedItem.paragraph = answer.paragraph
+                        selectedItem.title = answer.title
+                        selectedItem.answer = answer.answer
                         selectedItem.aquarcy = answer.accuracy
 
                     }
@@ -341,19 +391,17 @@ fun ItemAnswer(
         elevation = 10.dp,
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
-        Column() {
+        Column(Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .padding(13.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize(),
             ) {
 
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .padding(start = 14.dp),
-                    verticalArrangement = Arrangement.Center
+                        .padding(start = 9.dp),
                 ) {
 
                     Text(text = answer.answer, maxLines = 1, fontSize = 18.sp)
@@ -370,6 +418,8 @@ fun ItemAnswer(
 
                 }
 
+                Spacer(modifier = Modifier.height(3.dp))
+
             }
 
 
@@ -378,7 +428,10 @@ fun ItemAnswer(
 }
 
 class selectedItem() : ViewModel() {
+    var query: String by mutableStateOf("")
     var paragraph: String by mutableStateOf("")
+    var title: String by mutableStateOf("")
     var answer: String by mutableStateOf("")
     var aquarcy: String by mutableStateOf("")
+
 }

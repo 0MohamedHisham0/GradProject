@@ -15,6 +15,9 @@ public class Answer_Model {
         this.accuracy = accuracy;
     }
 
+    public Answer_Model() {
+    }
+
     public String getQuery() {
         return query;
     }

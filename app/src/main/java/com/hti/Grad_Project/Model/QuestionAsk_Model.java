@@ -15,6 +15,9 @@ public class QuestionAsk_Model implements Serializable {
         this.folder = folder;
     }
 
+    public QuestionAsk_Model() {
+    }
+
     public String getQuestion() {
         return question;
     }

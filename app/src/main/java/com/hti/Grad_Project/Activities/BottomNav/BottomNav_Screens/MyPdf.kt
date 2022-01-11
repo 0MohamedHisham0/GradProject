@@ -126,7 +126,7 @@ fun Body(onButtonSearchClicked: () -> Unit, pdfList: List<Pdf_Model>): String {
                     .height(50.dp)
                     .fillMaxWidth(0.83f),
                 value = textFieldState,
-                placeholder = { Text(text = "Search for Category") },
+                placeholder = { Text(text = "Search for Pdf") },
                 onValueChange = {
                     textFieldState = it
                 },
@@ -166,7 +166,6 @@ fun Body(onButtonSearchClicked: () -> Unit, pdfList: List<Pdf_Model>): String {
         Divider(color = Color.DarkGray, thickness = 1.dp)
 
         Spacer(modifier = Modifier.height(13.dp))
-
 
         if (pdfList.isEmpty()) {
             ShimmerAnimationJetPackComposeTheme() {
@@ -236,7 +235,7 @@ fun BookListItem(pdf: Pdf_Model, context: Context) {
 @Composable
 fun LoadingBookList() {
     LazyColumn(Modifier.fillMaxSize()) {
-        repeat(7) {
+        repeat(10) {
             item { ShimmerAnimateBookItem() }
         }
     }

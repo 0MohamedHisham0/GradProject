@@ -1,6 +1,7 @@
 package com.hti.Grad_Project.Utilities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
@@ -40,8 +41,6 @@ public class Constants {
     private static SharedPreferences sharedPreferences;
 
     //Text
-    public static final String userId = Objects.requireNonNull(Objects.requireNonNull(Constants.GetAuth()).getCurrentUser()).getUid();
-
     public static FirebaseAuth GetAuth() {
         if (mAut == null)
             mAut = FirebaseAuth.getInstance();

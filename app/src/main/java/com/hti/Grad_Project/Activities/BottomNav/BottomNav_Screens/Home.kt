@@ -137,18 +137,21 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
     ) {
         Spacer(modifier = Modifier.padding(14.dp))
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.icon_menu_drawer),
-                contentDescription = "Icon Menu",
+        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Start) {
+            Card(shape = RoundedCornerShape(13.dp)) {
+                Image(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.icon_menu_drawer),
+                    contentDescription = "Icon Menu",
 
-                Modifier
-                    .clickable(onClick = onMenuClicked)
-                    .height(50.dp)
-                    .width(50.dp)
-                    .clip(RoundedCornerShape(10.dp))
-            )
+                    Modifier
+                        .clickable(onClick = onMenuClicked)
+                        .height(50.dp)
+                        .width(50.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                )
 
+
+            }
 
         }
 
@@ -174,16 +177,19 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
             Spacer(modifier = Modifier.width(15.dp))
 
             Column(horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.icon_search_bt),
-                    contentDescription = "Icon Menu",
+                Card(shape = RoundedCornerShape(13.dp)) {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.icon_search_bt),
+                        contentDescription = "Icon Menu",
 
-                    Modifier
-                        .clickable(onClick = { TODO() })
-                        .height(50.dp)
-                        .width(50.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                )
+                        Modifier
+                            .clickable(onClick = { TODO() })
+                            .height(50.dp)
+                            .width(50.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    )
+                }
+
 
             }
 
@@ -258,34 +264,44 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
             Card(
                 shape = RoundedCornerShape(15.dp),
                 modifier = Modifier
-                    .padding(10.dp)
-                    .clickable(
-                        onClick = {
-                            coroutineScope.launch {
-                                setShowDialog(true)
-                            }
-                        }
-                    )
+                    .padding(0.dp)
+
             ) {
                 Image(
                     painterResource(R.drawable.ic_pdf),
-                    contentDescription = "Upload PDf"
+                    contentDescription = "Upload PDf",
+                    Modifier
+                        .clickable(
+                            onClick = {
+                                coroutineScope.launch {
+                                    setShowDialog(true)
+                                }
+                            }
+                        )
+                        .clip(RoundedCornerShape(10.dp))
                 )
             }
 
             Card(
                 shape = RoundedCornerShape(15.dp),
                 modifier = Modifier
-                    .clickable(
-                        onClick =
-                        onOcrClicked
-                    )
-                    .padding(10.dp)
+
+                    .padding(0.dp)
+
             ) {
                 Image(
                     painterResource(R.drawable.ic_ocr),
-                    contentDescription = "OCR"
+                    contentDescription = "OCR",
+                    Modifier
+                        .clickable(
+                            onClick =
+                            onOcrClicked
+                        )
+                        .clip(
+                            RoundedCornerShape(10.dp)
+                        )
                 )
+
             }
 
 

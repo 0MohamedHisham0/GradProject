@@ -9,7 +9,7 @@ sealed class BottomNavScreenDataModel(val route: String, var label: String, val 
 
     object Home : BottomNavScreenDataModel(ROUTE_HOME, "Home", R.drawable.icon_home )
     object MyPdf : BottomNavScreenDataModel(ROUTE_CATEGORY, "Saved Pdf", R.drawable.icon_saved_books)
-    object SavedBooks : BottomNavScreenDataModel(ROUTE_SAVED_BOOKS, "Question History",R.drawable.icon_history_bottom)
+    object SavedBooks : BottomNavScreenDataModel(ROUTE_SAVED_BOOKS, "Saved Questions",R.drawable.icon_save)
 
     object Items {
         val items = listOf(

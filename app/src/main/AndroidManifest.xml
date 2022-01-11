@@ -9,10 +9,8 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.READ_INTRENAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -29,16 +27,14 @@
 
         <activity
             android:name=".Activities.AnswersActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_answers"
-            android:theme="@style/Theme.GradProject.NoActionBar" />
+            android:theme="@style/Theme.GradProject.NoActionBar"></activity>
         <activity
             android:name=".Activities.OnboardingActivity"
             android:exported="true"
             android:label="@string/title_activity_answers"
-            android:theme="@style/Theme.GradProject.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.GradProject.NoActionBar"></activity>
         <activity
             android:name=".Activities.QuestionActivity"
             android:exported="false"
@@ -67,9 +63,7 @@
             android:exported="false" />
         <activity
             android:name=".Activities.Auth.LoginActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".Activities.Auth.Splash"
             android:exported="true">
@@ -78,10 +72,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-
-
     </application>
-
 
 </manifest>
