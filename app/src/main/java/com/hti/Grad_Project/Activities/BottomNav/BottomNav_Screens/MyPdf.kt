@@ -2,6 +2,8 @@ package com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,11 +31,9 @@ import com.hti.Grad_Project.Activities.QuestionActivity
 import com.hti.Grad_Project.Activities.snackBarDemo
 import com.hti.Grad_Project.Activities.ui.theme.ShimmerAnimationJetPackComposeTheme
 import com.hti.Grad_Project.Model.Pdf_Model
-import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.Constants
 import com.hti.Grad_Project.Utilities.MainViewModel
 import com.hti.Grad_Project.animations.ShimmerAnimateBookItem
-import kotlinx.coroutines.launch
 import java.util.*
 
 @ExperimentalMaterialApi
@@ -46,7 +46,10 @@ fun MyPdf() {
 
     CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
         if (Constants.checkInternetConnection(context))
-            GetBookListLiveData(personListLiveData = mainViewModel.bookList)
+            GetBookListLiveData(
+                pdfListLiveData = mainViewModel.bookList,
+                mainViewModel.bookListState
+            )
         else
             snackBarDemo()
     }
@@ -55,58 +58,48 @@ fun MyPdf() {
 @ExperimentalMaterialApi
 @Composable
 fun GetBookListLiveData(
-    personListLiveData: LiveData<List<Pdf_Model>>
+    pdfListLiveData: LiveData<List<Pdf_Model>>,
+    bookListState: MutableState<String>
 ) {
     var context = LocalContext.current
-    val pdfList by personListLiveData.observeAsState(initial = emptyList())
-    CategoryScreen(pdfList)
+    val pdfList by pdfListLiveData.observeAsState(initial = emptyList())
+    CategoryScreen(pdfList, bookListState)
 
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun CategoryScreen(pdfList: List<Pdf_Model>) {
+fun CategoryScreen(pdfList: List<Pdf_Model>, bookListState: MutableState<String>) {
     val context = LocalContext.current
 
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val coroutineScope = rememberCoroutineScope()
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+
 
     Scaffold(
         scaffoldState = scaffoldState,
 
         content = {
-            Body(onButtonSearchClicked = {
 
-                coroutineScope.launch {
-                }
-            }, pdfList)
+
+            Body(onButtonSearchClicked = {}, pdfList, bookListState)
         },
         drawerContent = {
             DrawerHome(context = context)
-        },
-
-        floatingActionButton = {
-            FloatingActionButton(modifier = Modifier.padding(bottom = 50.dp),
-                backgroundColor = colorResource(id = com.hti.Grad_Project.R.color.orange_main),
-                onClick = {
-                    coroutineScope.launch {
-                        setShowDialog(true)
-                    }
-
-
-                }) {
-                DialogAddNewBook(showDialog, setShowDialog)
-                Text(text = "+", fontSize = 23.sp)
-            }
         }
-
     )
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun Body(onButtonSearchClicked: () -> Unit, pdfList: List<Pdf_Model>): String {
+fun Body(
+    onButtonSearchClicked: () -> Unit,
+    pdfList: List<Pdf_Model>,
+    bookListState: MutableState<String>
+): String {
+
+
 
     var textFieldState by remember {
         mutableStateOf("")
@@ -167,12 +160,22 @@ fun Body(onButtonSearchClicked: () -> Unit, pdfList: List<Pdf_Model>): String {
 
         Spacer(modifier = Modifier.height(13.dp))
 
-        if (pdfList.isEmpty()) {
+        if (bookListState.value == "offline") {
+            //Pending
             ShimmerAnimationJetPackComposeTheme() {
                 LoadingBookList()
             }
-        } else {
+        } else if (bookListState.value == "succ" && pdfList.isNotEmpty()) {
+            //Data Successfully and not empty
             BookLazyList(searchedText = textFieldState, context = context, pdfList)
+        } else if (bookListState.value.contains("Failed")) {
+            //Failed
+
+
+            Error(error = bookListState.value)
+        } else if (bookListState.value == "succ" && pdfList.isEmpty()) {
+            //Data is Successfully and Empty
+            NotFound()
         }
 
         Spacer(modifier = Modifier.height(13.dp))
@@ -262,76 +265,10 @@ fun BookLazyList(searchedText: String, context: Context, pdfList: List<Pdf_Model
             resultList
         }
 
-        items(filteredList) { filteredList ->
-            BookListItem(pdf = filteredList, context)
+        items(filteredList) { item ->
+            BookListItem(pdf = item, context)
         }
 
     }
 }
-
-@Composable
-fun DialogAddNewBook(showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
-    var textFieldState by remember {
-        mutableStateOf("")
-    }
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = {
-
-            },
-
-            confirmButton = {
-                Button(
-                    colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
-                    onClick = {
-                        // Change the state to close the dialog
-                        setShowDialog(false)
-                    },
-                ) {
-                    Text("Save")
-                }
-            },
-            dismissButton = {
-                Button(
-                    shape = RoundedCornerShape(15.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
-                    onClick = {
-                        // Change the state to close the dialog
-                        setShowDialog(false)
-                    },
-                ) {
-                    Text("Dismiss")
-                }
-            },
-            text = {
-                Column() {
-
-                    Text("Adding New Category")
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    TextField(
-                        modifier = Modifier
-                            .height(50.dp)
-                            .fillMaxWidth(),
-                        value = textFieldState,
-                        placeholder = { Text(text = "New Category Name") },
-                        onValueChange = { textFieldState = it },
-                        shape = RoundedCornerShape(15.dp),
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            cursorColor = colorResource(id = com.hti.Grad_Project.R.color.orange_main)
-                        ),
-
-                        )
-                }
-
-            },
-        )
-    }
-}
-
 

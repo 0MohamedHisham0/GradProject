@@ -1,6 +1,11 @@
 package com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.speech.RecognizerIntent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -35,6 +40,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.text.Typography.paragraph
+import android.speech.tts.TextToSpeech
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.documentfile.provider.DocumentFile
+import com.hti.Grad_Project.Utilities.FileUtils
+import androidx.core.app.ActivityCompat.startActivityForResult
+
+import android.content.Intent
+import android.speech.tts.TextToSpeech.OnInitListener
+import androidx.core.app.ActivityCompat
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+
 
 @ExperimentalMaterialApi
 @Composable
@@ -50,13 +68,12 @@ fun MySavedQuestions() {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
-                GetQuestionSaveLiveData(
-                    mainViewModel.questionsSaveList,
-                    context,
-                    mainViewModel.questionsSaveListState
-                )
-            }
+            GetQuestionSaveLiveData(
+                mainViewModel.questionsSaveList,
+                context,
+                mainViewModel.questionsSaveListState
+            )
+
 
         }
 
@@ -185,7 +202,6 @@ fun SaveScreen(
 
         Spacer(modifier = Modifier.height(13.dp))
 
-
         if (questionsSaveListState.value == "offline") {
             //Pending
             ShimmerAnimationJetPackComposeTheme() {
@@ -226,7 +242,6 @@ fun QuestionSaveLazyList(
     selectedItem: selectedItemSaveQuestion, context: Context
 ) {
     var filteredList: List<Answer_Model>
-
     LazyColumn(contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)) {
 
         filteredList = if (searchedText.isEmpty()) {
@@ -242,7 +257,6 @@ fun QuestionSaveLazyList(
             }
             resultList
         }
-
         items(filteredList) { item ->
             QuestionSaveItem(model = item, scope, modalBottomSheetState, selectedItem, context)
         }
@@ -258,6 +272,8 @@ fun QuestionSaveItem(
     modalBottomSheetState: ModalBottomSheetState,
     selectedItem: selectedItemSaveQuestion, context: Context
 ) {
+
+
     Card(
         modifier = Modifier
             .padding(all = 5.dp)
@@ -266,13 +282,14 @@ fun QuestionSaveItem(
         shape = RoundedCornerShape(corner = CornerSize(15.dp)),
         onClick = {
             scope.launch {
-                modalBottomSheetState.show()
 
                 selectedItem.query = model.query + ""
                 selectedItem.paragraph = model.paragraph + ""
                 selectedItem.title = model.title + ""
                 selectedItem.answer = model.answer + ""
                 selectedItem.aquarcy = model.accuracy + ""
+
+                modalBottomSheetState.show()
 
             }
         }
@@ -345,10 +362,18 @@ fun ModelBottomSheetSaveQuestion(
     model: selectedItemSaveQuestion, context: Context
 ) {
     val iconColor = remember { mutableStateOf(R.color.LightGray) }
-    if (!modalBottomSheetState.isVisible)
-        iconColor.value = R.color.LightGray
 
+    //TextSpeech
+    val textToSpeech: TextToSpeech = TextToSpeech(context) {}
+    textToSpeech.language = Locale.UK
+
+    if (!modalBottomSheetState.isVisible) {
+        iconColor.value = R.color.LightGray
+        textToSpeech.stop()
+        textToSpeech.shutdown()
+    }
     ModalBottomSheetLayout(
+        sheetShape = RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp),
         sheetState = modalBottomSheetState,
         sheetContent = {
 
@@ -356,6 +381,7 @@ fun ModelBottomSheetSaveQuestion(
                 Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(20.dp)),
+
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -363,18 +389,69 @@ fun ModelBottomSheetSaveQuestion(
                         .padding(20.dp)
                         .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //Diver
-                    Divider(
-                        color = Color.LightGray,
-                        thickness = 3.dp,
-                        modifier = Modifier
-                            .width(50.dp)
-                            .clip(RoundedCornerShape(13.dp))
-                    )
-                    Spacer(modifier = Modifier.width(120.dp))
+
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        //Diver
+                        Divider(
+                            color = Color.LightGray,
+                            thickness = 3.dp,
+                            modifier = Modifier
+                                .width(50.dp)
+                                .clip(RoundedCornerShape(13.dp))
+                        )
+
+                        Spacer(modifier = Modifier.width(120.dp))
+                        Column(
+                            modifier = Modifier.size(40.dp),
+
+                            ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_speaker),
+                                contentDescription = "SaveAnswer",
+                                tint =  colorResource(iconColor.value),
+                                modifier = Modifier
+                                    .clickable {
+                                        try {
+                                            textToSpeech.speak("Your Questions is :"+
+                                                model.query.toString(),
+                                                TextToSpeech.QUEUE_FLUSH,
+                                                null
+                                            )
+                                            textToSpeech.speak("The Answer is :"
+                                                + model.answer,
+                                                TextToSpeech.QUEUE_ADD,
+                                                null
+                                            )
+                                            textToSpeech.speak("The accuracy of Answer is :"
+                                                + model.aquarcy,
+                                                TextToSpeech.QUEUE_ADD,
+                                                null
+                                            )
 
 
+                                            iconColor.value = R.color.orange_main
 
+                                        } catch (e: ActivityNotFoundException) {
+                                            // Handling error when the service is not available.
+                                            e.printStackTrace()
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "Your device does not support STT.",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                        }
+                                    }
+                                    .size(40.dp)
+                                    .padding(start = 0.dp)
+                            )
+                        }
+
+                    }
+                    Text(text = model.query, fontSize = 25.sp)
+
+                    Spacer(modifier = Modifier.width(100.dp))
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -398,7 +475,7 @@ fun ModelBottomSheetSaveQuestion(
                         )
                         Text(text = model.aquarcy, fontSize = 14.sp, color = Color.LightGray)
                     }
-                    
+
                 }
 
 

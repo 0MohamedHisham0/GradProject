@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.SwitchDefaults.colors
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.RippleCustomTheme
@@ -115,7 +117,7 @@ fun QuestionScreen(
                 if (!result.isNullOrEmpty()) {
                     // Recognized text is in the first position.
                     val recognizedText = result[0]
-                    textFieldState_Question = recognizedText + " ?"
+                    textFieldState_Question = "$recognizedText ?"
 
                 }
 
@@ -212,12 +214,13 @@ fun QuestionScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             TextField(
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
                     .height(50.dp)
                     .width(100.dp)
                     .fillMaxWidth(),
                 value = textFieldState_Predictions,
-                placeholder = { Text(text = "1") },
+                placeholder = { Text(text = "1~19") },
                 onValueChange = { textFieldState_Predictions = it },
                 shape = RoundedCornerShape(15.dp),
                 colors = TextFieldDefaults.textFieldColors(
@@ -233,7 +236,7 @@ fun QuestionScreen(
                     val model: QuestionAsk_Model
                     val intent = Intent(context, AnswersActivity::class.java)
                     if (textFieldState_Question != "" && textFieldState_Predictions != "") {
-                        if (textFieldState_Predictions.toInt() < 20) {
+                        if (textFieldState_Predictions.toInt() in 1..19) {
                             if (isCheckedBert.value) {
                                 model = QuestionAsk_Model(
                                     textFieldState_Question,
@@ -258,7 +261,7 @@ fun QuestionScreen(
                         } else {
                             Toast.makeText(
                                 context,
-                                "Predictions number should be less than 20",
+                                "Predictions number should be less than 20 and greater than 0.",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

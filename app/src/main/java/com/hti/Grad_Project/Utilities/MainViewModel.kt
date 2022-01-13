@@ -31,13 +31,14 @@ class MainViewModel : ViewModel() {
     fun getAnswerFromView(questionModel: QuestionAsk_Model, context: Context) {
         viewModelScope.launch {
             answerListModel = getAnswer(questionModel, context)
+
         }
     }
 
     fun getUserBooks(context: Context) {
 
         viewModelScope.launch {
-            bookList = getBookList(context = context)
+            bookList = getBookList(context = context, bookListState)
         }
     }
 
@@ -56,6 +57,7 @@ class MainViewModel : ViewModel() {
     fun deleteQuestionFromView(context: Context, model: Answer_Model) {
         viewModelScope.launch {
             deleteQuestionFromSave(model, context)
+
         }
     }
 }
@@ -109,7 +111,10 @@ private fun getAnswer(
     return answerClearList;
 }
 
-fun getBookList(context: Context): MutableLiveData<List<Pdf_Model>> {
+fun getBookList(
+    context: Context,
+    bookListState: MutableState<String>
+): MutableLiveData<List<Pdf_Model>> {
     var pdf: Map<String, Any> = HashMap()
     val pdfList = mutableListOf<Pdf_Model>()
     val pdfListLiveData = MutableLiveData<List<Pdf_Model>>()
@@ -119,7 +124,7 @@ fun getBookList(context: Context): MutableLiveData<List<Pdf_Model>> {
         .collection(Constants.GetAuth()?.currentUser?.uid.toString())
         .get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-
+                bookListState.value = "succ"
                 for (document in task.result) {
                     pdf = document.data
 
@@ -134,6 +139,7 @@ fun getBookList(context: Context): MutableLiveData<List<Pdf_Model>> {
                 pdfListLiveData.postValue(pdfList)
 
             } else {
+                bookListState.value = "Failed" + task.exception?.message.toString()
                 Toast.makeText(
                     context,
                     "" + task.exception!!.message,
@@ -164,7 +170,6 @@ fun deleteQuestionFromSave(model: Answer_Model, context: Context) {
     Constants.GetFireStoneDb()?.collection("UsersQuestionHistory")!!
         .document("UsersQuestionHistory")
         .collection(Constants.GetAuth()?.currentUser?.uid.toString()).document(model.title).delete()
-
 }
 
 fun getQuestionsList(
@@ -190,6 +195,7 @@ fun getQuestionsList(
                     model.answer = question.get("answer").toString()
                     model.title = question.get("title").toString()
                     model.accuracy = question.get("accuracy").toString()
+                    model.paragraph = question.get("paragraph").toString()
 
                     questionsList.add(model)
 
@@ -197,7 +203,7 @@ fun getQuestionsList(
                 questionsListLiveData.postValue(questionsList)
 
             } else {
-                questionsSaveListState.value = "Failed" + task.exception.message.toString()
+                questionsSaveListState.value = "Failed" + task.exception?.message.toString()
                 Toast.makeText(
                     context,
                     "" + task.exception!!.message,

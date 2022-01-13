@@ -11,6 +11,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.hti.Grad_Project.Activities.BaseActivity
 import com.hti.Grad_Project.Activities.BottomNavContainerScreen
 import com.hti.Grad_Project.R
+import com.hti.Grad_Project.Utilities.Constants
 import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : BaseActivity() {
@@ -165,19 +166,17 @@ class RegisterActivity : BaseActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val userId = mAuth!!.currentUser!!.uid
-
+                    Toast.makeText(applicationContext, "Successfully Sign UP", Toast.LENGTH_SHORT)
+                        .show()
                     //update user profile information
                     val currentUserDb = mDatabaseReference!!.child("Users").child(userId)
                     currentUserDb.child("email").setValue(email)
                     currentUserDb.child("userName").setValue(userName)
 
-//                    spin_kit_QS.visibility = View.GONE
-//                    clRegister.visibility = View.VISIBLE
+                    Constants.saveUserID(this, Constants.GetAuth().currentUser?.uid)
 
                     updateUserInfoAndUI()
                 } else {
-                    // If sign in fails, display a message to the user.
-//                    spin_kit_QS.visibility = View.GONE
                     Toast.makeText(
                         this, task.exception?.message.toString(),
                         Toast.LENGTH_SHORT

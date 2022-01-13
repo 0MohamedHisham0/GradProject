@@ -8,16 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import com.hti.Grad_Project.Activities.BottomNav.BottomNavScreenDataModel
 
 @Composable
-fun Settings() {
+fun GoogleEnhanced() {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            text = "Settings",
+            text = "Google Enhanced",
             fontSize = 20.sp
         )
     }

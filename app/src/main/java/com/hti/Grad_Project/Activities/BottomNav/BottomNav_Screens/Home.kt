@@ -137,7 +137,7 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
     ) {
         Spacer(modifier = Modifier.padding(14.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Start) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
             Card(shape = RoundedCornerShape(13.dp)) {
                 Image(
                     imageVector = ImageVector.vectorResource(id = R.drawable.icon_menu_drawer),
@@ -163,8 +163,9 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
                     .height(50.dp)
                     .fillMaxWidth(0.83f),
                 value = textFieldState,
-                placeholder = { Text(text = "Search for Category") },
-                onValueChange = { textFieldState = it },
+                placeholder = { Text(text = "Search in our Books") },
+                onValueChange = { textFieldState = it
+                },
                 shape = RoundedCornerShape(15.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
@@ -503,6 +504,7 @@ object RippleCustomTheme : RippleTheme {
 fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, context: Context) {
     if (showDialog) {
         AlertDialog(
+            modifier = Modifier.clip(RoundedCornerShape(20.dp)),
             onDismissRequest = {
                 Toast.makeText(context, "You Didn't save any pdf!", Toast.LENGTH_SHORT).show()
             },
@@ -576,10 +578,11 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
                 }
 
                 fun savePdfToFB(model: Pdf_Model) {
+                    model.title = model.title.toString().replace("\"","")
                     Constants.GetFireStoneDb()?.collection("UsersBooks")!!
                         .document("UsersPdf")
                         .collection(Constants.GetAuth()?.currentUser?.uid.toString())
-                        .document(urlToTimeStamp(model.file)).set(model)
+                        .document(model.id.toString()).set(model)
                         .addOnSuccessListener {
                             Toast.makeText(
                                 context,
@@ -646,34 +649,12 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
                             })
 
 
-//                        try {
-//
-//                            if (isLetters(file.name)) {
-//
-//
-//                            } else
-//                                Toast.makeText(
-//                                    context,
-//                                    "Pdf name must be with english letters or with numbers or use this symbol ( '.','!','+','-','_',' ','(',')') ",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//
-//                        } catch (e: Exception) {
-//                            Toast.makeText(
-//                                context,
-//                                "Make sure that use main file manager",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-
-
                     }
 
                     if (bookName == "Upload Pdf" || Uri == android.net.Uri.EMPTY) {
                         Toast.makeText(context, "Browse you pdf to be uploaded", Toast.LENGTH_SHORT)
                             .show()
                     }
-
 
                 }
 

@@ -1,8 +1,11 @@
 package com.hti.Grad_Project.Activities
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -42,6 +45,7 @@ import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 @ExperimentalMaterialApi
 class AnswersActivity : ComponentActivity() {
@@ -210,17 +214,25 @@ fun ModelBottomSheet(
     model: selectedItem, context: Context
 ) {
     val iconColor = remember { mutableStateOf(R.color.LightGray) }
-    if (!modalBottomSheetState.isVisible)
+
+
+    //TextSpeech
+    val textToSpeech: TextToSpeech = TextToSpeech(context) {}
+    textToSpeech.language = Locale.UK
+
+    if (!modalBottomSheetState.isVisible) {
         iconColor.value = R.color.LightGray
+        textToSpeech.stop()
+        textToSpeech.shutdown()
+    }
 
     ModalBottomSheetLayout(
+        sheetShape = RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp),
         sheetState = modalBottomSheetState,
         sheetContent = {
 
             Column(
-                Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(20.dp)),
+                Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -238,10 +250,9 @@ fun ModelBottomSheet(
                                 .clip(RoundedCornerShape(13.dp))
                         )
                         Spacer(modifier = Modifier.width(120.dp))
-                        Column(
-                            modifier = Modifier.size(40.dp),
 
-                            ) {
+                        Column(modifier = Modifier.size(40.dp))
+                        {
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_save),
                                 contentDescription = "SaveAnswer",
@@ -260,6 +271,54 @@ fun ModelBottomSheet(
                                             answerModel
                                         )
                                         iconColor.value = R.color.orange_main
+                                    }
+                                    .size(40.dp)
+                                    .padding(start = 0.dp)
+                            )
+                        }
+
+                        Column(modifier = Modifier.size(40.dp))
+                        {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_speaker),
+                                contentDescription = "Speaker",
+                                tint = colorResource(iconColor.value),
+                                modifier = Modifier
+                                    .clickable {
+                                        try {
+                                            textToSpeech.speak(
+                                                "Your Questions is :" +
+                                                        model.query.toString(),
+                                                TextToSpeech.QUEUE_FLUSH,
+                                                null
+                                            )
+                                            textToSpeech.speak(
+                                                "The Answer is :"
+                                                        + model.answer,
+                                                TextToSpeech.QUEUE_ADD,
+                                                null
+                                            )
+                                            textToSpeech.speak(
+                                                "The accuracy of Answer is :"
+                                                        + model.aquarcy,
+                                                TextToSpeech.QUEUE_ADD,
+                                                null
+                                            )
+
+
+                                            iconColor.value = R.color.orange_main
+
+                                        } catch (e: ActivityNotFoundException) {
+                                            // Handling error when the service is not available.
+                                            e.printStackTrace()
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "Your device does not support STT.",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                        }
                                     }
                                     .size(40.dp)
                                     .padding(start = 0.dp)

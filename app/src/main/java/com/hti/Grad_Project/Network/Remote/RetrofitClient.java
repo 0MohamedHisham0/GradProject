@@ -1,6 +1,8 @@
 package com.hti.Grad_Project.Network.Remote;
 
 
+import android.util.Log;
+
 import com.hti.Grad_Project.Model.AnswerList_Model;
 import com.hti.Grad_Project.Model.Pdf_Model;
 import com.hti.Grad_Project.Model.Pdf_List_Model;
@@ -14,22 +16,26 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private final static String BASE_URL = "http://b91e-45-240-189-104.ngrok.io/";
+    private final static String BASE_URL = "http://e2e5-154-179-236-29.ngrok.io/";
     private final RemoteDB_Dao remoteDB_dao;
     private static RetrofitClient retrofitClient;
     private static Retrofit retrofit;
 
     public RetrofitClient() {
+        OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        clientBuilder.addInterceptor(loggingInterceptor);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(new OkHttpClient().newBuilder()
-                        .connectTimeout(2, TimeUnit.MINUTES)
+                .client(clientBuilder.connectTimeout(2, TimeUnit.MINUTES)
                         .readTimeout(2, TimeUnit.MINUTES)
                         .writeTimeout(2, TimeUnit.MINUTES)
                         .build())
@@ -60,10 +66,10 @@ public class RetrofitClient {
 
     public Call<Pdf_Model> postNewBook(File pdf, String title) throws UnsupportedEncodingException {
 
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), pdf);
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", URLEncoder.encode(pdf.getName(), "utf-8"), requestBody);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), pdf);
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file",URLEncoder.encode(pdf.getName(),"utf8"), requestBody);
 
-        return remoteDB_dao.postPdf(title.replace(".pdf", ""), filePart);
+        return remoteDB_dao.postPdf(title, filePart);
     }
 
 }
