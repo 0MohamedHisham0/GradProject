@@ -98,16 +98,13 @@ fun Body(
     bookListState: MutableState<String>
 ): String {
 
-
-
     var textFieldState by remember {
         mutableStateOf("")
     }
     val context = LocalContext.current
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(all = 16.dp)
+                .padding(all = 16.dp)
     ) {
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -188,9 +185,9 @@ fun Body(
 fun BookListItem(pdf: Pdf_Model, context: Context) {
     Card(
         modifier = Modifier
-            .padding(all = 5.dp)
+            .padding(all = 7.dp)
             .fillMaxWidth(),
-        elevation = 10.dp,
+        elevation = 8.dp,
         shape = RoundedCornerShape(corner = CornerSize(15.dp)),
         onClick = {
             val intent = Intent(context, QuestionActivity::class.java)
@@ -198,10 +195,10 @@ fun BookListItem(pdf: Pdf_Model, context: Context) {
             context.startActivity(intent)
         }
     ) {
-        Column() {
+        Column {
             Row(
                 modifier = Modifier
-                    .padding(13.dp)
+                    .padding(20.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -214,16 +211,6 @@ fun BookListItem(pdf: Pdf_Model, context: Context) {
                 ) {
 
                     Text(text = pdf.title, maxLines = 2, fontSize = 18.sp)
-
-                    Spacer(modifier = Modifier.height(3.dp))
-
-                    Text(
-                        text = pdf.file,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = Color.LightGray,
-                        fontSize = 11.sp
-                    )
 
                 }
 

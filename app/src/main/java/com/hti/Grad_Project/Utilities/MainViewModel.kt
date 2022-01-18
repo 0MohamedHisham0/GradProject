@@ -25,14 +25,14 @@ class MainViewModel : ViewModel() {
     var enhancedGoogleAnswer = MutableLiveData<List<Answer_Model>>()
     var enhancedGoogleAnswerState = mutableStateOf("offline")
 
-    var answerListModelState = mutableStateOf("offline")
+    var answerListModelState = MutableLiveData(String())
     var bookListState = mutableStateOf("offline")
     var questionsSaveListState = mutableStateOf("offline")
 
-    fun  getAnswerFromView(questionModel: QuestionAsk_Model, context: Context) {
+    fun getAnswerFromView(questionModel: QuestionAsk_Model, context: Context) {
         viewModelScope.launch {
 
-                     answerListModel = getAnswer(questionModel, context)
+            answerListModel = getAnswer(questionModel, context, answerListModelState)
 
         }
     }
@@ -68,12 +68,12 @@ class MainViewModel : ViewModel() {
             enhancedGoogleAnswer = getAnswerEnhanced(question, context, enhancedGoogleAnswerState)
         }
     }
-
 }
 
 private fun getAnswer(
     questionModel: QuestionAsk_Model,
-    context: Context
+    context: Context,
+    answerListModelState: MutableLiveData<String>,
 ): MutableLiveData<List<Answer_Model>> {
 
     val answerClearList = MutableLiveData<List<Answer_Model>>()
@@ -82,8 +82,7 @@ private fun getAnswer(
         questionModel.question,
         questionModel.prediction.toString(),
         questionModel.model,
-        questionModel.folder
-    )
+        questionModel.folder)
         .enqueue(object : Callback<AnswerList_Model?> {
             override fun onResponse(
 
@@ -93,13 +92,16 @@ private fun getAnswer(
                 if (response.isSuccessful && response.code() == 200) {
 
                     answerClearList.value = response.body()?.result
-
-                } else
+                    answerListModelState.value = "Succ"
+                } else {
                     Toast.makeText(
                         context,
                         "Failed : ${response.message()}",
                         Toast.LENGTH_SHORT
                     ).show()
+                    answerListModelState.value = "Failed: ${response.message()}"
+
+                }
             }
 
             override fun onFailure(
@@ -111,12 +113,12 @@ private fun getAnswer(
                     "Failed ${t.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+                answerListModelState.value = "Failed: ${t.message}"
 
-                Log.i("TAG", "onFailure: ${t.message}")
             }
 
         })
-    return answerClearList;
+    return answerClearList
 }
 
 fun getBookList(

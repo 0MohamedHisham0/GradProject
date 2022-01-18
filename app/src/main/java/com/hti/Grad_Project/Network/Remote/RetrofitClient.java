@@ -25,7 +25,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private final static String BASE_URL = "http://4119-154-179-69-240.ngrok.io/";
+    private final static String BASE_URL = "http://a60e-197-54-192-140.ngrok.io/";
     private final RemoteDB_Dao remoteDB_dao;
     private static RetrofitClient retrofitClient;
 
@@ -37,9 +37,9 @@ public class RetrofitClient {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(clientBuilder.connectTimeout(2, TimeUnit.MINUTES)
-                        .readTimeout(2, TimeUnit.MINUTES)
-                        .writeTimeout(2, TimeUnit.MINUTES)
+                .client(clientBuilder.connectTimeout(5, TimeUnit.MINUTES)
+                        .readTimeout(5, TimeUnit.MINUTES)
+                        .writeTimeout(5, TimeUnit.MINUTES)
                         .build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

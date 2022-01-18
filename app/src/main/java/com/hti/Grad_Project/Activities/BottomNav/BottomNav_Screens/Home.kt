@@ -26,6 +26,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -43,6 +44,7 @@ import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.database.DataSnapshot
 import com.hti.Grad_Project.Activities.Auth.LoginActivity
 import com.hti.Grad_Project.Activities.OCR_Activity
+import com.hti.Grad_Project.Activities.QuestionActivity
 import com.hti.Grad_Project.Activities.snackBarDemo
 import com.hti.Grad_Project.LocalData.drawerList
 import com.hti.Grad_Project.LocalData.localBookList
@@ -59,7 +61,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.net.URLEncoder
-
 
 @ExperimentalMaterialApi
 @Composable
@@ -125,20 +126,20 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
         mutableStateOf("")
     }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
-    Log.i(
-        "TAG", "Body: ${
-            URLEncoder.encode("Drsaraكشفرصدنهائىعلومحاسببرمحةالشبكا", "utf-8")
-        }"
-    )
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(all = 16.dp)
+            .padding(all = 0.dp)
     ) {
-        Spacer(modifier = Modifier.padding(14.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-            Card(shape = RoundedCornerShape(13.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+
+
+            Card(
+                shape = RoundedCornerShape(13.dp),
+                modifier = Modifier.padding(16.dp, top = 20.dp, bottom = 20.dp)
+            ) {
                 Image(
                     imageVector = ImageVector.vectorResource(id = R.drawable.icon_menu_drawer),
                     contentDescription = "Icon Menu",
@@ -147,166 +148,129 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
                         .clickable(onClick = onMenuClicked)
                         .height(50.dp)
                         .width(50.dp)
+                        .padding(0.dp)
                         .clip(RoundedCornerShape(10.dp))
                 )
-
 
             }
 
         }
 
-        Spacer(modifier = Modifier.padding(10.dp))
+        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            TextField(
+            Divider(color = Color.DarkGray, thickness = 1.dp)
+
+            Spacer(modifier = Modifier.height(13.dp))
+
+            Text(text = "Our Books", color = MaterialTheme.colors.onPrimary, fontSize = 20.sp)
+
+            Spacer(modifier = Modifier.height(13.dp))
+
+            Divider(color = Color.DarkGray, thickness = 1.dp)
+
+            LazyListLocalBook(context)
+
+            Spacer(modifier = Modifier.height(13.dp))
+
+            //Or Continue With
+            Row(
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth(0.83f),
-                value = textFieldState,
-                placeholder = { Text(text = "Search in our Books") },
-                onValueChange = { textFieldState = it
-                },
-                shape = RoundedCornerShape(15.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = colorResource(id = R.color.orange_main)
-                ),
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .padding(20.dp)
+            ) {
 
-                )
-            Spacer(modifier = Modifier.width(15.dp))
-
-            Column(horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()) {
-                Card(shape = RoundedCornerShape(13.dp)) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.icon_search_bt),
-                        contentDescription = "Icon Menu",
-
-                        Modifier
-                            .clickable(onClick = { TODO() })
-                            .height(50.dp)
-                            .width(50.dp)
-                            .clip(RoundedCornerShape(10.dp))
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Divider(
+                        color = Color.LightGray,
+                        thickness = 3.dp,
+                        modifier = Modifier.width(20.dp)
                     )
+
+                }
+
+                Spacer(modifier = Modifier.width(20.dp))
+                Text(
+                    text = "Or Continue with",
+                    fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                    color = Color.LightGray
+                )
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Divider(
+                        color = Color.LightGray,
+                        thickness = 3.dp,
+                        modifier = Modifier.width(20.dp)
+                    )
+
+                }
+
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 75.dp, start = 75.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Card(
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .padding(0.dp)
+
+                ) {
+                    Image(
+                        painterResource(R.drawable.ic_pdf),
+                        contentDescription = "Upload PDf",
+                        Modifier
+                            .clickable(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        setShowDialog(true)
+                                    }
+                                }
+                            )
+                            .clip(RoundedCornerShape(20.dp))
+                    )
+                }
+
+                Card(
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+
+                        .padding(0.dp)
+
+                ) {
+                    Image(
+                        painterResource(R.drawable.ic_ocr),
+                        contentDescription = "OCR",
+                        Modifier
+                            .clickable(
+                                onClick =
+                                onOcrClicked
+                            )
+                            .clip(
+                                RoundedCornerShape(20.dp)
+                            )
+                    )
+
                 }
 
 
             }
-
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(text = "Our Books", color = MaterialTheme.colors.onPrimary, fontSize = 20.sp)
-
-        Spacer(modifier = Modifier.height(13.dp))
-
-        Divider(color = Color.DarkGray, thickness = 1.dp)
-
-        LazyListLocalBook {
-
-        }
-
-        Spacer(modifier = Modifier.height(13.dp))
-
-        //Or Continue With
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .padding(20.dp)
-        ) {
-
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Divider(
-                    color = Color.LightGray,
-                    thickness = 3.dp,
-                    modifier = Modifier.width(20.dp)
-                )
-
-            }
-
-            Spacer(modifier = Modifier.width(20.dp))
-            Text(
-                text = "Or Continue with",
-                fontFamily = FontFamily(Font(R.font.poppins_regular)),
-                color = Color.LightGray
-            )
-            Spacer(modifier = Modifier.width(20.dp))
-
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Divider(
-                    color = Color.LightGray,
-                    thickness = 3.dp,
-                    modifier = Modifier.width(20.dp)
-                )
-
-            }
-
-        }
-
-        Spacer(modifier = Modifier.height(50.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 75.dp, start = 75.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            Card(
-                shape = RoundedCornerShape(15.dp),
-                modifier = Modifier
-                    .padding(0.dp)
-
-            ) {
-                Image(
-                    painterResource(R.drawable.ic_pdf),
-                    contentDescription = "Upload PDf",
-                    Modifier
-                        .clickable(
-                            onClick = {
-                                coroutineScope.launch {
-                                    setShowDialog(true)
-                                }
-                            }
-                        )
-                        .clip(RoundedCornerShape(10.dp))
-                )
-            }
-
-            Card(
-                shape = RoundedCornerShape(15.dp),
-                modifier = Modifier
-
-                    .padding(0.dp)
-
-            ) {
-                Image(
-                    painterResource(R.drawable.ic_ocr),
-                    contentDescription = "OCR",
-                    Modifier
-                        .clickable(
-                            onClick =
-                            onOcrClicked
-                        )
-                        .clip(
-                            RoundedCornerShape(10.dp)
-                        )
-                )
-
-            }
-
-
-        }
         DialogAddingNewPDF(showDialog, setShowDialog, context)
 
     }
@@ -314,7 +278,6 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
 
 @Composable
 fun DrawerHome(context: Context) {
-    // Column Composable
     Column(
         Modifier
             .background(Color.White)
@@ -332,7 +295,6 @@ fun DrawerHome(context: Context) {
 
                 userName = userModel!!.userName
                 userEmail = userModel.email
-
 
             }
 
@@ -397,46 +359,64 @@ fun DrawerItem(itemName: String, icon: Int, context: Context) {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
-fun LazyListLocalBook(selectedItem: (LocalBookModel) -> Unit) {
+fun LazyListLocalBook(context: Context) {
 
     val list = remember { localBookList.bookList }
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp)
+        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 10.dp)
     ) {
         items(list) { book ->
-            ItemBookList(book = book)
+            ItemBookList(book = book, context = context)
         }
     }
 
 }
 
+@ExperimentalMaterialApi
 @Composable
-fun ItemBookList(book: LocalBookModel) {
+fun ItemBookList(book: Pdf_Model, context: Context) {
     Card(
         modifier = Modifier
-            .padding(all = 5.dp)
-            .width(300.dp)
-            .height(110.dp),
+            .padding(all = 6.dp)
+            .width(160.dp)
+            .height(270.dp),
         elevation = 10.dp,
-        shape = RoundedCornerShape(corner = CornerSize(10.dp))
+        shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+        onClick = {
+            val intent = Intent(context, QuestionActivity::class.java)
+            intent.putExtra("pdfModel", book)
+            context.startActivity(intent)
+        }
+
     ) {
-        Column() {
-            Row(
+        Column {
+            Column(
                 modifier = Modifier
-                    .padding(13.dp)
+                    .padding(0.dp)
                     .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Image(
+                    painter = painterResource(id = book.pdfIcon),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .height(210.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(corner = CornerSize(10.dp)))
+                )
 
-                ItemBookImage(book = book)
+                Spacer(modifier = Modifier.height(7.dp))
 
+                Column(
+                    Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-                Spacer(modifier = Modifier.width(4.dp))
-
-                Column {
-
-                    Text(text = book.bookName, maxLines = 2)
+                    Text(text = book.title, maxLines = 2)
 
                     Spacer(modifier = Modifier.height(3.dp))
 
@@ -452,34 +432,8 @@ fun ItemBookList(book: LocalBookModel) {
 
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(7.dp),
-                horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom
-            ) {
-                Text(text = book.numAskedInBook, fontSize = 13.sp)
-                Text(text = " Asked in this book", fontSize = 13.sp)
-            }
         }
-
     }
-}
-
-@Composable
-fun ItemBookImage(book: LocalBookModel) {
-    Image(
-        painter = painterResource(id = book.bookImage),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .padding(5.dp)
-            .height(40.dp)
-            .width(40.dp)
-            .clip(RoundedCornerShape(corner = CornerSize(10.dp)))
-
-    )
 }
 
 object RippleCustomTheme : RippleTheme {
@@ -578,7 +532,7 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
                 }
 
                 fun savePdfToFB(model: Pdf_Model) {
-                    model.title = model.title.toString().replace("\"","")
+                    model.title = model.title.toString().replace("\"", "")
                     Constants.GetFireStoneDb()?.collection("UsersBooks")!!
                         .document("UsersPdf")
                         .collection(Constants.GetAuth()?.currentUser?.uid.toString())

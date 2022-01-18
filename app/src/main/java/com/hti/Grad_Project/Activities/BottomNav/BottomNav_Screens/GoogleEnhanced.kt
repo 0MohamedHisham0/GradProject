@@ -72,7 +72,7 @@ fun GetAnswerFromEnhancedGoogle() {
     val a by answerEnhanced.observeAsState(initial = emptyList())
     val state by answerEnhancedState.observeAsState(initial = String)
     if (state == "inProgress") {
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         ShimmerEnhancedGoogle()
     } else if (state == "Done") {
         if (a.isNotEmpty()) {
@@ -89,17 +89,18 @@ fun GetAnswerFromEnhancedGoogle() {
             }
         }
     }
+
 }
 
 @Composable
 fun Answer_Model_Enhanced_Item(context: Context, model: Answer_Model) {
+
     //TextSpeech
     val textToSpeech: TextToSpeech = TextToSpeech(context) {}
     textToSpeech.language = Locale.UK
     val iconColor = remember { mutableStateOf(R.color.LightGray) }
 
     Column {
-
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -113,7 +114,6 @@ fun Answer_Model_Enhanced_Item(context: Context, model: Answer_Model) {
                 Text(text = "Accuracy", fontSize = 17.sp)
 
                 Text(text = model.accuracy, fontSize = 17.sp)
-
             }
 
 

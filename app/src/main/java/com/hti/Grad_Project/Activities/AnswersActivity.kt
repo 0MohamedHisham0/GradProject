@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,10 +29,10 @@ import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens.RippleCustomTheme
 import com.hti.Grad_Project.Activities.ui.theme.ComposeBottomNavigationTheme
@@ -69,8 +68,8 @@ class AnswersActivity : ComponentActivity() {
                 ) {
                     CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
                         getAnswerLiveData(
-                            mainViewModel.answerListModel,
-                            questionModel
+                            mainViewModel,
+                            questionModel, context
                         )
                     }
 
@@ -86,16 +85,34 @@ class AnswersActivity : ComponentActivity() {
 @ExperimentalMaterialApi
 @Composable
 fun getAnswerLiveData(
-    personListLiveData: LiveData<List<Answer_Model>>,
-    questionaskModel: QuestionAsk_Model
+    vm: MainViewModel,
+    questionaskModel: QuestionAsk_Model, context: Context
 ) {
 
-    val answersList by personListLiveData.observeAsState(initial = emptyList())
-    if (answersList == null) {
-        Loading()
-    } else {
-        AnswerScreen(answersList, questionaskModel)
+    val answersList by vm.answerListModel.observeAsState(initial = emptyList())
+    val answersListState by vm.answerListModelState.observeAsState(initial = String)
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Spacer(modifier = Modifier.height(20.dp))
+
+        TopBarAnswerScreen(onBackButtonClick = {
+            val intent = Intent(context, AnswersActivity::class.java)
+            context.startActivity(intent)
+        }, ParagraphName = questionaskModel.question)
     }
+
+
+    if (answersListState == "Succ") {
+
+        AnswerScreen(answersList, questionaskModel)
+
+    } else if (answersListState.toString().contains("Failed")) {
+        Toast.makeText(context, "${answersListState}", Toast.LENGTH_SHORT)
+            .show()
+    } else {
+        Loading()
+    }
+
 }
 
 @Composable
@@ -125,18 +142,7 @@ fun AnswerScreen(
 
     val context = LocalContext.current
 
-    val IsBertClicked = remember { mutableStateOf(true) }
-
-    val ColorOfBert = remember { mutableStateOf(R.color.orange_main) }
-    val ColorOfDistlBert = remember { mutableStateOf(R.color.orange_main) }
-
-    val myList = remember { mutableStateListOf<answerModel>() }
-    val firstList = remember {
-        answerList.answerBertList
-    }
     val currentListSize = remember { mutableStateOf(questionModel.prediction) }
-    val question = remember { mutableStateOf(questionModel.question) }
-
 
     //Bottom Sheet
     val selectedItem = remember {
@@ -150,20 +156,14 @@ fun AnswerScreen(
 
     Column(modifier = Modifier.padding(16.dp)) {
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        TopBarAnswerScreen(onBackButtonClick = {
-            context.startActivity(
-                Intent(
-                    context,
-                    QuestionActivity::class.java
-                )
-            )
-        }, ParagraphName = questionModel.question)
-
         Spacer(modifier = Modifier.height(60.dp))
 
-        Text(text = "${questionModel.prediction} Answers", fontSize = 20.sp)
+        Text(
+            text = "${questionModel.prediction} Answers",
+            fontSize = 20.sp,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(15.dp))
 
