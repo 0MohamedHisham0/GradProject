@@ -8,10 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.hti.Grad_Project.Model.AnswerList_Model
-import com.hti.Grad_Project.Model.Answer_Model
-import com.hti.Grad_Project.Model.Pdf_Model
-import com.hti.Grad_Project.Model.QuestionAsk_Model
+import com.hti.Grad_Project.Model.*
 import com.hti.Grad_Project.Network.Remote.RetrofitClient
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -24,13 +21,18 @@ class MainViewModel : ViewModel() {
     var bookList = MutableLiveData<List<Pdf_Model>>()
     var questionsSaveList = MutableLiveData<List<Answer_Model>>()
 
+    //Enhanced Google
+    var enhancedGoogleAnswer = MutableLiveData<List<Answer_Model>>()
+    var enhancedGoogleAnswerState = mutableStateOf("offline")
+
     var answerListModelState = mutableStateOf("offline")
     var bookListState = mutableStateOf("offline")
     var questionsSaveListState = mutableStateOf("offline")
 
-    fun getAnswerFromView(questionModel: QuestionAsk_Model, context: Context) {
+    fun  getAnswerFromView(questionModel: QuestionAsk_Model, context: Context) {
         viewModelScope.launch {
-            answerListModel = getAnswer(questionModel, context)
+
+                     answerListModel = getAnswer(questionModel, context)
 
         }
     }
@@ -57,9 +59,16 @@ class MainViewModel : ViewModel() {
     fun deleteQuestionFromView(context: Context, model: Answer_Model) {
         viewModelScope.launch {
             deleteQuestionFromSave(model, context)
-
         }
     }
+
+    //Enhanced Google
+    fun getAnswersEnhancedFromView(context: Context, question: String) {
+        viewModelScope.launch {
+            enhancedGoogleAnswer = getAnswerEnhanced(question, context, enhancedGoogleAnswerState)
+        }
+    }
+
 }
 
 private fun getAnswer(
@@ -82,9 +91,8 @@ private fun getAnswer(
                 response: Response<AnswerList_Model?>
             ) {
                 if (response.isSuccessful && response.code() == 200) {
-                    val model: AnswerList_Model? = response.body()
 
-                    answerClearList.postValue(model!!.result)
+                    answerClearList.value = response.body()?.result
 
                 } else
                     Toast.makeText(
@@ -213,4 +221,51 @@ fun getQuestionsList(
             }
         }
     return questionsListLiveData
+}
+
+private fun getAnswerEnhanced(
+    question: String,
+    context: Context,
+    enhancedGoogleAnswerState: MutableState<String>
+): MutableLiveData<List<Answer_Model>> {
+
+    val answerEnhanced = MutableLiveData<List<Answer_Model>>()
+
+    RetrofitClient.getInstance().enhancedGoogle(question)
+        .enqueue(object : Callback<AnswerList_Model> {
+            override fun onResponse(
+                call: Call<AnswerList_Model>,
+                response: Response<AnswerList_Model>
+            ) {
+                if (response.isSuccessful && response.code() == 200) {
+                    val model: AnswerList_Model? = response.body()
+                    answerEnhanced.postValue(model?.result)
+                    enhancedGoogleAnswerState.value = "succ"
+                } else
+                    Toast.makeText(
+                        context,
+                        "Failed : ${response.message()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                enhancedGoogleAnswerState.value = response.message()
+
+            }
+
+            override fun onFailure(
+                call: Call<AnswerList_Model?>,
+                t: Throwable
+            ) {
+                Toast.makeText(
+                    context,
+                    "Failed ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                enhancedGoogleAnswerState.value = t.message.toString()
+
+                Log.i("TAG", "onFailure: ${t.message}")
+            }
+
+        })
+    return answerEnhanced;
 }

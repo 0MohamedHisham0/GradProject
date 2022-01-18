@@ -4,12 +4,15 @@ package com.hti.Grad_Project.Network.Remote;
 import android.util.Log;
 
 import com.hti.Grad_Project.Model.AnswerList_Model;
+import com.hti.Grad_Project.Model.Answer_Model;
+import com.hti.Grad_Project.Model.Answer_Model_Enhanced;
 import com.hti.Grad_Project.Model.Pdf_Model;
 import com.hti.Grad_Project.Model.Pdf_List_Model;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -22,10 +25,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private final static String BASE_URL = "http://e2e5-154-179-236-29.ngrok.io/";
+    private final static String BASE_URL = "http://4119-154-179-69-240.ngrok.io/";
     private final RemoteDB_Dao remoteDB_dao;
     private static RetrofitClient retrofitClient;
-    private static Retrofit retrofit;
 
     public RetrofitClient() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder();
@@ -70,6 +72,10 @@ public class RetrofitClient {
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("file",URLEncoder.encode(pdf.getName(),"utf8"), requestBody);
 
         return remoteDB_dao.postPdf(title, filePart);
+    }
+
+    public Call<AnswerList_Model> enhancedGoogle(String question) {
+        return remoteDB_dao.enhancedGoogle(question);
     }
 
 }

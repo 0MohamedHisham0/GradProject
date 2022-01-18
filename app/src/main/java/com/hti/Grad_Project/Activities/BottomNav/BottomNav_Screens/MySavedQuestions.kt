@@ -362,6 +362,7 @@ fun ModelBottomSheetSaveQuestion(
     model: selectedItemSaveQuestion, context: Context
 ) {
     val iconColor = remember { mutableStateOf(R.color.LightGray) }
+    val iconColor_Spaeker = remember { mutableStateOf(R.color.LightGray) }
 
     //TextSpeech
     val textToSpeech: TextToSpeech = TextToSpeech(context) {}
@@ -369,6 +370,7 @@ fun ModelBottomSheetSaveQuestion(
 
     if (!modalBottomSheetState.isVisible) {
         iconColor.value = R.color.LightGray
+        iconColor_Spaeker.value = R.color.LightGray
         textToSpeech.stop()
         textToSpeech.shutdown()
     }
@@ -408,7 +410,7 @@ fun ModelBottomSheetSaveQuestion(
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_speaker),
                                 contentDescription = "SaveAnswer",
-                                tint =  colorResource(iconColor.value),
+                                tint =  colorResource(iconColor_Spaeker.value),
                                 modifier = Modifier
                                     .clickable {
                                         try {
@@ -429,7 +431,7 @@ fun ModelBottomSheetSaveQuestion(
                                             )
 
 
-                                            iconColor.value = R.color.orange_main
+                                            iconColor_Spaeker.value = R.color.orange_main
 
                                         } catch (e: ActivityNotFoundException) {
                                             // Handling error when the service is not available.

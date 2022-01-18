@@ -22,9 +22,9 @@ import com.hti.Grad_Project.Activities.ui.theme.ShimmerAnimationJetPackComposeTh
 
 @Preview
 @Composable
-fun Preview2(){
+fun Preview2() {
     ShimmerAnimationJetPackComposeTheme {
-        ShimmerAnimateBookItem()
+        ShimmerEnhancedGoogle()
     }
 }
 
@@ -70,14 +70,12 @@ fun ShimmerBookItem(brush: Brush) {
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(start = 0.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-
                     Text(
                         text = "",
                         modifier = Modifier
@@ -114,4 +112,99 @@ fun ShimmerBookItem(brush: Brush) {
 
 }
 
+
+@Composable
+fun ShimmerEnhancedGoogle() {
+    val shimmerColors = listOf(
+        Color.LightGray.copy(0.9f),
+        Color.LightGray.copy(0.2f),
+        Color.LightGray.copy(0.9f)
+    )
+
+    val transition = rememberInfiniteTransition()
+    val translateAnim = transition.animateFloat(
+        initialValue = 0f, targetValue = 1000f, animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1200, easing = FastOutLinearInEasing),
+            RepeatMode.Reverse
+        )
+    )
+
+    val brush = Brush.linearGradient(
+        colors = shimmerColors,
+        start = Offset(10f, 10f),
+        end = Offset(translateAnim.value, translateAnim.value)
+    )
+
+    ShimmerEnhancedGoogle(brush)
+}
+
+
+@Composable
+fun ShimmerEnhancedGoogle(brush: Brush) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+            Column {
+                Text(
+                    text = "",
+                    modifier = Modifier
+                        .background(brush)
+                        .height(15.dp)
+                        .fillMaxWidth(),
+                    maxLines = 2,
+                    fontSize = 18.sp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.LightGray,
+                    fontSize = 11.sp,
+                    modifier = Modifier
+                        .background(brush)
+                        .height(100.dp)
+                        .fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.LightGray,
+                        fontSize = 11.sp,
+                        modifier = Modifier
+                            .background(brush)
+                            .height(20.dp)
+                            .width(60.dp)
+                    )
+
+                    Text(
+                        text = "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.LightGray,
+                        fontSize = 11.sp,
+                        modifier = Modifier
+                            .background(brush)
+                            .height(20.dp)
+                            .width(100.dp)
+                    )
+                }
+            }
+
+
+        }
+
+    }
+
+
+}
 

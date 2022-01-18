@@ -727,10 +727,7 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
 
                 }
 
-            },
-        )
-
-
+            })
     }
 
 }

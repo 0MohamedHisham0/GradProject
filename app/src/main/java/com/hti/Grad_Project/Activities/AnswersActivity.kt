@@ -215,7 +215,6 @@ fun ModelBottomSheet(
 ) {
     val iconColor = remember { mutableStateOf(R.color.LightGray) }
 
-
     //TextSpeech
     val textToSpeech: TextToSpeech = TextToSpeech(context) {}
     textToSpeech.language = Locale.UK

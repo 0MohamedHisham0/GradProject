@@ -193,7 +193,7 @@ fun QuestionScreen(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.icon_mic),
-                        contentDescription = "Back Button",
+                        contentDescription = "Mic",
                         tint = colorResource(id = R.color.orange_main)
                     )
                 }

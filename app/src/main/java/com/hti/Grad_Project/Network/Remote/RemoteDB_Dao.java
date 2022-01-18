@@ -2,9 +2,12 @@ package com.hti.Grad_Project.Network.Remote;
 
 
 import com.hti.Grad_Project.Model.AnswerList_Model;
+import com.hti.Grad_Project.Model.Answer_Model_Enhanced;
 import com.hti.Grad_Project.Model.Pdf_Model;
 import com.hti.Grad_Project.Model.Pdf_List_Model;
 import com.hti.Grad_Project.Model.Answer_Model;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -34,10 +37,10 @@ public interface RemoteDB_Dao {
 
     @Multipart
     @POST("api/v2/files/add")
-    Call<Pdf_Model> postPdf(
-            @Part("title") String title,
-            @Part MultipartBody.Part file
+    Call<Pdf_Model> postPdf(@Part("title") String title,
+                            @Part MultipartBody.Part file);
 
-    );
+    @GET("/api/search/")
+    Call<AnswerList_Model> enhancedGoogle(@Query("question") String question);
 
 }

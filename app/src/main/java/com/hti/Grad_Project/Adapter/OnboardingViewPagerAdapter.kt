@@ -11,8 +11,7 @@ import com.hti.Grad_Project.fragments.OnboardingFragment
 
 class OnboardingViewPagerAdapter(
     fragmentActivity: FragmentActivity,
-    private val context: Context
-) :
+    private val context: Context):
     FragmentStateAdapter(fragmentActivity) {
 
     override fun createFragment(position: Int): Fragment {

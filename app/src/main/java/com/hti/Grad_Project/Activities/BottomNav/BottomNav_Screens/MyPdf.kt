@@ -79,7 +79,6 @@ fun CategoryScreen(pdfList: List<Pdf_Model>, bookListState: MutableState<String>
 
     Scaffold(
         scaffoldState = scaffoldState,
-
         content = {
 
 

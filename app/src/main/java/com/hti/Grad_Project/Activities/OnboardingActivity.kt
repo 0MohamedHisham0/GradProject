@@ -14,17 +14,16 @@ import com.hti.Grad_Project.Utilities.Constants
 
 import kotlinx.android.synthetic.main.activity_onboarding.*
 import android.content.SharedPreferences
-
-
+import androidx.lifecycle.ViewModelProvider
+import com.hti.Grad_Project.Network.Remote.RetrofitClient
+import com.hti.Grad_Project.Utilities.MainViewModel
 
 
 class OnboardingActivity : AppCompatActivity() {
-
     private lateinit var mViewPager: ViewPager2
     private lateinit var btnBack: Button
     private lateinit var btnNext: Button
     var prefs: SharedPreferences? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,4 +88,5 @@ class OnboardingActivity : AppCompatActivity() {
     private fun getItem(): Int {
         return mViewPager.currentItem
     }
+
 }
