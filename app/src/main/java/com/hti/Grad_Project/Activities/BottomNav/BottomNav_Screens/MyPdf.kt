@@ -2,10 +2,8 @@ package com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens
 
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,10 +21,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.hti.Grad_Project.Activities.QuestionActivity
 import com.hti.Grad_Project.Activities.snackBarDemo
 import com.hti.Grad_Project.Activities.ui.theme.ShimmerAnimationJetPackComposeTheme
@@ -34,6 +32,7 @@ import com.hti.Grad_Project.Model.Pdf_Model
 import com.hti.Grad_Project.Utilities.Constants
 import com.hti.Grad_Project.Utilities.MainViewModel
 import com.hti.Grad_Project.animations.ShimmerAnimateBookItem
+import kotlinx.coroutines.delay
 import java.util.*
 
 @ExperimentalMaterialApi
@@ -59,52 +58,44 @@ fun MyPdf() {
 @Composable
 fun GetBookListLiveData(
     pdfListLiveData: LiveData<List<Pdf_Model>>,
-    bookListState: MutableState<String>
+    bookListState: MutableLiveData<String>
 ) {
     var context = LocalContext.current
     val pdfList by pdfListLiveData.observeAsState(initial = emptyList())
-    CategoryScreen(pdfList, bookListState)
+    val pdfListState by bookListState.observeAsState(initial = String())
+    CategoryScreen(pdfList, pdfListState)
 
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun CategoryScreen(pdfList: List<Pdf_Model>, bookListState: MutableState<String>) {
-    val context = LocalContext.current
-
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+fun CategoryScreen(pdfList: List<Pdf_Model>, bookListState: String) {
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    val coroutineScope = rememberCoroutineScope()
-
 
     Scaffold(
         scaffoldState = scaffoldState,
         content = {
 
 
-            Body(onButtonSearchClicked = {}, pdfList, bookListState)
-        },
-        drawerContent = {
-            DrawerHome(context = context)
-        }
-    )
+            Body(pdfList, bookListState)
+        })
 }
 
 @ExperimentalMaterialApi
 @Composable
 fun Body(
-    onButtonSearchClicked: () -> Unit,
     pdfList: List<Pdf_Model>,
-    bookListState: MutableState<String>
+    bookListState: String
 ): String {
 
     var textFieldState by remember {
         mutableStateOf("")
     }
+
     val context = LocalContext.current
     Column(
         modifier = Modifier
-                .padding(all = 16.dp)
+            .padding(all = 16.dp)
     ) {
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -112,7 +103,6 @@ fun Body(
         Row(modifier = Modifier.fillMaxWidth()) {
             TextField(
                 modifier = Modifier
-                    .height(50.dp)
                     .fillMaxWidth(0.83f),
                 value = textFieldState,
                 placeholder = { Text(text = "Search for Pdf") },
@@ -136,7 +126,6 @@ fun Body(
                     contentDescription = "Icon Search",
 
                     Modifier
-                        .clickable(onClick = onButtonSearchClicked)
                         .height(50.dp)
                         .width(50.dp)
                         .clip(RoundedCornerShape(10.dp))
@@ -148,7 +137,7 @@ fun Body(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "Your Category", color = MaterialTheme.colors.onPrimary, fontSize = 20.sp)
+        Text(text = "Your Uploaded Pdf", color = MaterialTheme.colors.onPrimary, fontSize = 20.sp)
 
         Spacer(modifier = Modifier.height(13.dp))
 
@@ -156,28 +145,31 @@ fun Body(
 
         Spacer(modifier = Modifier.height(13.dp))
 
-        if (bookListState.value == "offline") {
+        if (bookListState == "offline") {
             //Pending
             ShimmerAnimationJetPackComposeTheme() {
                 LoadingBookList()
             }
-        } else if (bookListState.value == "succ" && pdfList.isNotEmpty()) {
+        } else if (bookListState == "succ" && pdfList.isNotEmpty()) {
             //Data Successfully and not empty
             BookLazyList(searchedText = textFieldState, context = context, pdfList)
-        } else if (bookListState.value.contains("Failed")) {
+        } else if (bookListState.contains("Failed")) {
             //Failed
-
-
-            Error(error = bookListState.value)
-        } else if (bookListState.value == "succ" && pdfList.isEmpty()) {
+            Error(error = bookListState)
+        } else if (pdfList.isEmpty()) {
             //Data is Successfully and Empty
-            NotFound()
+                NotFound()
         }
 
         Spacer(modifier = Modifier.height(13.dp))
 
     }
     return textFieldState;
+}
+
+suspend fun startTimer(time: Long, onTimerEnd: () -> Unit) {
+    delay(timeMillis = time)
+    onTimerEnd()
 }
 
 @ExperimentalMaterialApi
@@ -198,7 +190,7 @@ fun BookListItem(pdf: Pdf_Model, context: Context) {
         Column {
             Row(
                 modifier = Modifier
-                    .padding(20.dp)
+                    .padding(19.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -210,7 +202,7 @@ fun BookListItem(pdf: Pdf_Model, context: Context) {
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    Text(text = pdf.title, maxLines = 2, fontSize = 18.sp)
+                    Text(text = pdf.title, maxLines = 2, fontSize = 16.sp)
 
                 }
 
@@ -254,7 +246,6 @@ fun BookLazyList(searchedText: String, context: Context, pdfList: List<Pdf_Model
         items(filteredList) { item ->
             BookListItem(pdf = item, context)
         }
-
     }
 }
 

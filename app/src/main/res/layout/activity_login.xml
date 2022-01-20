@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="?attr/colorOnPrimary"
     android:layout_height="match_parent"
+    android:background="?attr/colorOnPrimary"
     tools:context="com.hti.Grad_Project.Activities.Auth.LoginActivity">
 
 
@@ -12,9 +12,9 @@
         android:id="@+id/tv1_Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="20sp"
+        android:layout_marginStart="20sp"
         android:layout_marginTop="60dp"
         android:fontFamily="@font/poppins_black"
         android:gravity="top"
@@ -50,14 +50,20 @@
         app:boxCornerRadiusBottomStart="16sp"
         app:boxCornerRadiusTopEnd="16sp"
         app:boxCornerRadiusTopStart="16sp"
+        app:boxStrokeColor="@color/LightGray"
         app:errorIconDrawable="@drawable/ic_error"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv2_Login"
-        app:startIconDrawable="@drawable/icon_email">
+        app:startIconDrawable="@drawable/icon_email"
+        app:startIconTint="@color/LightGray"
+        android:textColorHint="@color/LightGray"
+
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/EditText_Email_SignIn"
             android:layout_width="match_parent"
+            android:textColorHint="@color/LightGray"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:textColor="?attr/colorSecondary" />
@@ -76,18 +82,23 @@
         app:boxCornerRadiusBottomStart="16sp"
         app:boxCornerRadiusTopEnd="16sp"
         app:boxCornerRadiusTopStart="16sp"
+        app:boxStrokeColor="@color/LightGray"
         app:endIconMode="password_toggle"
         app:endIconTint="@color/secondary"
         app:errorIconDrawable="@drawable/ic_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColorHint="@color/LightGray"
+
         app:layout_constraintTop_toBottomOf="@id/TI_Email_Login"
-        app:startIconDrawable="@drawable/icon_password">
+        app:startIconDrawable="@drawable/icon_password"
+        app:startIconTint="@color/LightGray">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/EditText_Pass_Login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:inputType="textPassword"
             android:textColor="?attr/colorSecondary" />
 
@@ -153,7 +164,6 @@
         app:layout_constraintTop_toBottomOf="@id/ll_tv3">
 
 
-
         <carbon.widget.Button
             android:id="@+id/bt_ocr_Login"
             android:layout_width="80dp"
@@ -174,24 +184,25 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="40dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal|top"
-        android:fontFamily="@font/poppins_regular"
-        android:text="New User?" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center_horizontal|top"
+            android:text="New User?"
+            android:textColor="@color/LightGray" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:gravity="center_horizontal|top"
             android:fontFamily="@font/poppins_regular"
+            android:gravity="center_horizontal|top"
             android:text=" Create Account"
             android:textColor="@color/orange_main"
             android:textStyle="bold"

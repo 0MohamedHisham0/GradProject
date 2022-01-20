@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.internal.enableLiveLiterals
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,15 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import com.hti.Grad_Project.Activities.BottomNavContainerScreen
-import com.hti.Grad_Project.Activities.Loading
 import com.hti.Grad_Project.Model.AnswerList_Model
 import com.hti.Grad_Project.Model.Answer_Model
-import com.hti.Grad_Project.Model.Answer_Model_Enhanced
 import com.hti.Grad_Project.Network.Remote.RetrofitClient
 import com.hti.Grad_Project.R
-import com.hti.Grad_Project.Utilities.MainViewModel
 import com.hti.Grad_Project.animations.ShimmerEnhancedGoogle
 import retrofit2.Call
 import retrofit2.Callback
@@ -69,17 +63,18 @@ fun GoogleEnhanced() {
 fun GetAnswerFromEnhancedGoogle() {
     val context = LocalContext.current
 
-    val a by answerEnhanced.observeAsState(initial = emptyList())
+    val answerEnhancedList by answerEnhanced.observeAsState(initial = emptyList())
     val state by answerEnhancedState.observeAsState(initial = String)
+
     if (state == "inProgress") {
         Spacer(modifier = Modifier.height(20.dp))
         ShimmerEnhancedGoogle()
     } else if (state == "Done") {
-        if (a.isNotEmpty()) {
+        if (answerEnhancedList.isNotEmpty()) {
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
             ) {
-                items(a) { answer ->
+                items(answerEnhancedList) { answer ->
                     Answer_Model_Enhanced_Item(
                         context = context,
                         model = answer
@@ -213,8 +208,7 @@ fun GoogleEnhScreen(
 
         TextField(
             modifier = Modifier
-                .height(50.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth().defaultMinSize(),
             value = textFieldState_Question,
             placeholder = { Text(text = "Ask your Question Here!") },
             onValueChange = { textFieldState_Question = it },

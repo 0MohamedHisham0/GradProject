@@ -25,7 +25,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private final static String BASE_URL = "http://a60e-197-54-192-140.ngrok.io/";
+    private final static String BASE_URL = "http://8cf0-154-179-126-81.ngrok.io/";
     private final RemoteDB_Dao remoteDB_dao;
     private static RetrofitClient retrofitClient;
 
@@ -69,7 +69,7 @@ public class RetrofitClient {
     public Call<Pdf_Model> postNewBook(File pdf, String title) throws UnsupportedEncodingException {
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), pdf);
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file",URLEncoder.encode(pdf.getName(),"utf8"), requestBody);
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", URLEncoder.encode(pdf.getName(), "utf8"), requestBody);
 
         return remoteDB_dao.postPdf(title, filePart);
     }
@@ -77,7 +77,6 @@ public class RetrofitClient {
     public Call<AnswerList_Model> enhancedGoogle(String question) {
         return remoteDB_dao.enhancedGoogle(question);
     }
-
 }
 
 

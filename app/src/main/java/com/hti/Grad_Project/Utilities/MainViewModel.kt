@@ -3,7 +3,6 @@ package com.hti.Grad_Project.Utilities
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.concurrent.thread
 
 class MainViewModel : ViewModel() {
     var answerListModel = MutableLiveData<List<Answer_Model>>()
@@ -23,11 +23,11 @@ class MainViewModel : ViewModel() {
 
     //Enhanced Google
     var enhancedGoogleAnswer = MutableLiveData<List<Answer_Model>>()
-    var enhancedGoogleAnswerState = mutableStateOf("offline")
+    var enhancedGoogleAnswerState = MutableLiveData("offline")
 
     var answerListModelState = MutableLiveData(String())
-    var bookListState = mutableStateOf("offline")
-    var questionsSaveListState = mutableStateOf("offline")
+    var bookListState = MutableLiveData("offline")
+    var questionsSaveListState = MutableLiveData("offline")
 
     fun getAnswerFromView(questionModel: QuestionAsk_Model, context: Context) {
         viewModelScope.launch {
@@ -123,7 +123,7 @@ private fun getAnswer(
 
 fun getBookList(
     context: Context,
-    bookListState: MutableState<String>
+    bookListState: MutableLiveData<String>
 ): MutableLiveData<List<Pdf_Model>> {
     var pdf: Map<String, Any> = HashMap()
     val pdfList = mutableListOf<Pdf_Model>()
@@ -134,6 +134,7 @@ fun getBookList(
         .collection(Constants.GetAuth()?.currentUser?.uid.toString())
         .get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
+
                 bookListState.value = "succ"
                 for (document in task.result) {
                     pdf = document.data
@@ -184,7 +185,7 @@ fun deleteQuestionFromSave(model: Answer_Model, context: Context) {
 
 fun getQuestionsList(
     context: Context,
-    questionsSaveListState: MutableState<String>
+    questionsSaveListState: MutableLiveData<String>
 ): MutableLiveData<List<Answer_Model>> {
     var question: Map<String, Any> = HashMap()
 
@@ -228,7 +229,7 @@ fun getQuestionsList(
 private fun getAnswerEnhanced(
     question: String,
     context: Context,
-    enhancedGoogleAnswerState: MutableState<String>
+    enhancedGoogleAnswerState: MutableLiveData<String>
 ): MutableLiveData<List<Answer_Model>> {
 
     val answerEnhanced = MutableLiveData<List<Answer_Model>>()

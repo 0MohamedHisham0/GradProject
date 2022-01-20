@@ -29,15 +29,19 @@
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/btn_orange_rounded_normal.xml" value="0.2462962962962963" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/btn_orange_rounded_pressed.xml" value="0.2462962962962963" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/btn_orange_rounded_selector.xml" value="0.2462962962962963" />
+        <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/icon_favorite.xml" value="0.2755208333333333" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/icon_google.xml" value="0.24166666666666667" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/icon_home.xml" value="0.24166666666666667" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/onboarding_selected_dot_orange.xml" value="0.2462962962962963" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/onboarding_unselected_dot_orange.xml" value="0.2462962962962963" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/drawable/onboarding_viewpager_selector_orange.xml" value="0.2462962962962963" />
-        <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/layout/activity_login.xml" value="0.259375" />
+        <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/layout/activity_onboarding.xml" value="0.259375" />
+        <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/layout/activity_register.xml" value="0.259375" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/layout/fragment_onboarding.xml" value="0.264" />
         <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/layout/onboarding_viewpager_selector_orange.xml" value="0.259375" />
+        <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.15" />
+        <entry key="..\:/Users/Moham/AndroidStudioProjects/GradProject/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.15" />
       </map>
     </option>
   </component>

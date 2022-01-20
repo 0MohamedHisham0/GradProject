@@ -145,7 +145,6 @@ fun QuestionScreen(
 
         TextField(
             modifier = Modifier
-                .height(50.dp)
                 .fillMaxWidth(),
             value = textFieldState_Question,
             placeholder = { Text(text = "Ask your Question Here!") },
@@ -216,7 +215,6 @@ fun QuestionScreen(
             TextField(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
-                    .height(50.dp)
                     .width(100.dp)
                     .fillMaxWidth(),
                 value = textFieldState_Predictions,

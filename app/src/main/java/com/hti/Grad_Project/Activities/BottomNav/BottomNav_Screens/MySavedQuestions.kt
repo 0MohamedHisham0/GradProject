@@ -1,11 +1,7 @@
 package com.hti.Grad_Project.Activities.BottomNav.BottomNav_Screens
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.speech.RecognizerIntent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,8 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.hti.Grad_Project.Activities.ModelBottomSheet
-import com.hti.Grad_Project.Activities.selectedItem
 import com.hti.Grad_Project.Activities.ui.theme.ShimmerAnimationJetPackComposeTheme
 import com.hti.Grad_Project.Model.Answer_Model
 import com.hti.Grad_Project.R
@@ -39,19 +33,10 @@ import com.hti.Grad_Project.animations.ShimmerAnimateBookItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.text.Typography.paragraph
 import android.speech.tts.TextToSpeech
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.documentfile.provider.DocumentFile
-import com.hti.Grad_Project.Utilities.FileUtils
-import androidx.core.app.ActivityCompat.startActivityForResult
 
-import android.content.Intent
-import android.speech.tts.TextToSpeech.OnInitListener
-import androidx.core.app.ActivityCompat
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.lifecycle.MutableLiveData
 
 
 @ExperimentalMaterialApi
@@ -85,11 +70,12 @@ fun MySavedQuestions() {
 fun GetQuestionSaveLiveData(
     questionLiveData: LiveData<List<Answer_Model>>,
     context: Context,
-    questionsSaveListState: MutableState<String>
+    questionsSaveListState: MutableLiveData<String>
 ) {
 
     val questionList by questionLiveData.observeAsState(initial = emptyList())
-    SaveScreen(questionList, context, questionsSaveListState)
+    val questionListState by questionsSaveListState.observeAsState(initial = String())
+    SaveScreen(questionList, context, questionListState)
 
 
 }
@@ -124,7 +110,7 @@ fun NotFound() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "You didn't saved questions yet", fontSize = 20.sp)
+        Text(text = "You didn't saved any questions yet", fontSize = 20.sp)
     }
 }
 
@@ -142,7 +128,7 @@ fun LoadingQuestionSave() {
 fun SaveScreen(
     questionList: List<Answer_Model>,
     context: Context,
-    questionsSaveListState: MutableState<String>
+    questionsSaveListState: String
 ) {
     var textFieldState by remember {
         mutableStateOf("")
@@ -202,13 +188,13 @@ fun SaveScreen(
 
         Spacer(modifier = Modifier.height(13.dp))
 
-        if (questionsSaveListState.value == "offline") {
+        if (questionsSaveListState == "offline") {
             //Pending
             ShimmerAnimationJetPackComposeTheme() {
 
                 LoadingQuestionSave()
             }
-        } else if (questionsSaveListState.value == "succ" && questionList.isNotEmpty()) {
+        } else if (questionsSaveListState == "succ" && questionList.isNotEmpty()) {
             //Data Successfully and not empty
             QuestionSaveLazyList(
                 searchedText = textFieldState,
@@ -217,10 +203,10 @@ fun SaveScreen(
                 scope = scope,
                 modalBottomSheetState = modalBottomSheetState, selectedItem = selectedItem
             )
-        } else if (questionsSaveListState.value.contains("Failed")) {
+        } else if (questionsSaveListState.contains("Failed")) {
             //Failed
-            Error(error = questionsSaveListState.value)
-        } else if (questionsSaveListState.value == "succ" && questionList.isEmpty()) {
+            Error(error = questionsSaveListState)
+        } else if (questionsSaveListState == "succ" && questionList.isEmpty()) {
             //Data is Successfully and Empty
             NotFound()
         }

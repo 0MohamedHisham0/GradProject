@@ -30,6 +30,7 @@
             android:exported="true"
             android:label="@string/title_activity_answers"
             android:theme="@style/Theme.GradProject.NoActionBar"></activity>
+
         <activity
             android:name=".Activities.OnboardingActivity"
             android:exported="true"

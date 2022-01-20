@@ -47,7 +47,6 @@ class OCR_Activity : BaseActivity(), passUriToActivity {
     private val IMAGE_CAPTURE_CODE = 654
     private var pdfList = mutableListOf<book_page_Model>()
 
-    private var booksMap = mutableMapOf<String, String>()
     private var oldBookOrNew = "NEW"
     private var bookName: String = ""
     private lateinit var fromHome: String

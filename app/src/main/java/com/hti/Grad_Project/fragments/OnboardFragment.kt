@@ -5,15 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
-import com.airbnb.lottie.LottieAnimationView
 import com.hti.Grad_Project.R
 import kotlinx.android.synthetic.main.fragment_onboarding.view.*
 
 
-class OnboardingFragment : Fragment() {
+class OnboardFragment : Fragment() {
     private lateinit var title: String
     private lateinit var description: String
     private var imageResource = 0
@@ -55,8 +53,8 @@ class OnboardingFragment : Fragment() {
             title: String?,
             description: String?,
             imageResource: Int
-        ): OnboardingFragment {
-            val fragment = OnboardingFragment()
+        ): OnboardFragment {
+            val fragment = OnboardFragment()
             val args = Bundle()
             args.putString(ARG_PARAM1, title)
             args.putString(ARG_PARAM2, description)

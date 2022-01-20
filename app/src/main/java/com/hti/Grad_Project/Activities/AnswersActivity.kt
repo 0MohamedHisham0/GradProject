@@ -45,6 +45,8 @@ import com.hti.Grad_Project.Utilities.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
+import android.speech.tts.Voice
+
 
 @ExperimentalMaterialApi
 class AnswersActivity : ComponentActivity() {
@@ -53,7 +55,6 @@ class AnswersActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-
         setContent {
             val context = LocalContext.current
             val intent = (context as AnswersActivity).intent
@@ -213,19 +214,25 @@ fun ModelBottomSheet(
     modalBottomSheetState: ModalBottomSheetState,
     model: selectedItem, context: Context
 ) {
-    val iconColor = remember { mutableStateOf(R.color.LightGray) }
+    val speakerColor = remember { mutableStateOf(R.color.LightGray) }
+    val saveAnswerColor = remember { mutableStateOf(R.color.LightGray) }
 
     //TextSpeech
+
     val textToSpeech: TextToSpeech = TextToSpeech(context) {}
     textToSpeech.language = Locale.UK
 
+
     if (!modalBottomSheetState.isVisible) {
-        iconColor.value = R.color.LightGray
-        textToSpeech.stop()
-        textToSpeech.shutdown()
+        speakerColor.value = R.color.LightGray
+        saveAnswerColor.value = R.color.LightGray
+        if (textToSpeech.isSpeaking)
+            textToSpeech.shutdown()
+
     }
 
     ModalBottomSheetLayout(
+
         sheetShape = RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp),
         sheetState = modalBottomSheetState,
         sheetContent = {
@@ -248,14 +255,14 @@ fun ModelBottomSheet(
                                 .width(50.dp)
                                 .clip(RoundedCornerShape(13.dp))
                         )
-                        Spacer(modifier = Modifier.width(120.dp))
+                        Spacer(modifier = Modifier.width(90.dp))
 
                         Column(modifier = Modifier.size(40.dp))
                         {
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_save),
                                 contentDescription = "SaveAnswer",
-                                tint = colorResource(iconColor.value),
+                                tint = colorResource(saveAnswerColor.value),
                                 modifier = Modifier
                                     .clickable {
                                         val answerModel = Answer_Model(
@@ -269,7 +276,7 @@ fun ModelBottomSheet(
                                             context,
                                             answerModel
                                         )
-                                        iconColor.value = R.color.orange_main
+                                        saveAnswerColor.value = R.color.orange_main
                                     }
                                     .size(40.dp)
                                     .padding(start = 0.dp)
@@ -281,7 +288,7 @@ fun ModelBottomSheet(
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_speaker),
                                 contentDescription = "Speaker",
-                                tint = colorResource(iconColor.value),
+                                tint = colorResource(speakerColor.value),
                                 modifier = Modifier
                                     .clickable {
                                         try {
@@ -305,7 +312,7 @@ fun ModelBottomSheet(
                                             )
 
 
-                                            iconColor.value = R.color.orange_main
+                                            speakerColor.value = R.color.orange_main
 
                                         } catch (e: ActivityNotFoundException) {
                                             // Handling error when the service is not available.
@@ -353,14 +360,16 @@ fun ModelBottomSheet(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Button(
-                        onClick = {},
+                        onClick = {
+                            context.startActivity(Intent(context, QuestionActivity::class.java))
+                        },
                         modifier = Modifier
                             .fillMaxWidth(), shape = RoundedCornerShape(15.dp),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = colorResource(id = R.color.orange_main)
                         )
                     ) {
-                        Text(text = "Rate this Answer", color = Color.White)
+                        Text(text = "Ask answer question", color = Color.White)
                     }
 
                 }
@@ -468,12 +477,22 @@ fun ItemAnswer(
 
                     Text(
                         text = answer.paragraph,
-                        maxLines = 2,
+                        maxLines = 20,
                         overflow = TextOverflow.Ellipsis,
                         color = Color.LightGray,
                         fontSize = 11.sp, lineHeight = 15.sp
                     )
 
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Row(
+                        Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Accuracy: ${answer.accuracy}",
+                            fontSize = 14.sp,
+                            color = LightGray,
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(3.dp))
@@ -493,3 +512,5 @@ class selectedItem() : ViewModel() {
     var aquarcy: String by mutableStateOf("")
 
 }
+
+

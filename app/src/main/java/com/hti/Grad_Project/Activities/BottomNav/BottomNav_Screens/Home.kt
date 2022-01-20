@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.widget.Space
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
@@ -26,7 +28,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,24 +45,26 @@ import androidx.compose.ui.unit.sp
 import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.database.DataSnapshot
 import com.hti.Grad_Project.Activities.Auth.LoginActivity
+import com.hti.Grad_Project.Activities.Loading
 import com.hti.Grad_Project.Activities.OCR_Activity
 import com.hti.Grad_Project.Activities.QuestionActivity
 import com.hti.Grad_Project.Activities.snackBarDemo
 import com.hti.Grad_Project.LocalData.drawerList
 import com.hti.Grad_Project.LocalData.localBookList
-import com.hti.Grad_Project.Model.LocalBookModel
+
 import com.hti.Grad_Project.Model.Pdf_Model
 import com.hti.Grad_Project.Model.UserModel
 import com.hti.Grad_Project.Network.Remote.RetrofitClient
 import com.hti.Grad_Project.R
 import com.hti.Grad_Project.Utilities.Constants
 import com.hti.Grad_Project.Utilities.FileUtils
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
-import java.net.URLEncoder
+
 
 @ExperimentalMaterialApi
 @Composable
@@ -122,9 +126,6 @@ fun HomeScreen() {
 fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    var textFieldState by remember {
-        mutableStateOf("")
-    }
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -134,7 +135,6 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
         Spacer(modifier = Modifier.height(10.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-
 
             Card(
                 shape = RoundedCornerShape(13.dp),
@@ -278,6 +278,13 @@ fun Body(onMenuClicked: () -> Unit, onOcrClicked: () -> Unit, onUploadPdfClicked
 
 @Composable
 fun DrawerHome(context: Context) {
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val (showEmailDialog, setShowEmailDialog) = remember { mutableStateOf(false) }
+    val (showUserNameDialog, setShowUserNameDialog) = remember { mutableStateOf(false) }
+
+
     Column(
         Modifier
             .background(Color.White)
@@ -289,6 +296,7 @@ fun DrawerHome(context: Context) {
 
         var userName by remember { mutableStateOf("") }
         var userEmail by remember { mutableStateOf("") }
+
         Constants.GetRef().child("Users").child(Constants.GetAuth().currentUser!!.uid).get()
             .addOnSuccessListener { dataSnapshot: DataSnapshot ->
                 val userModel = dataSnapshot.getValue(UserModel::class.java)
@@ -298,29 +306,64 @@ fun DrawerHome(context: Context) {
 
             }
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = userName,
-            fontSize = 25.sp,
-            modifier = Modifier.padding(start = 20.dp)
-        )
+        if (userName != "") {
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = userName,
+                fontSize = 25.sp,
+                modifier = Modifier.padding(start = 20.dp)
+            )
 
-        Text(
-            text = userEmail,
-            fontSize = 13.sp,
-            modifier = Modifier.padding(start = 20.dp), color = Color.White
-        )
+            Text(
+                text = userEmail,
+                fontSize = 13.sp,
+                modifier = Modifier.padding(start = 20.dp), color = Color.White
+            )
 
-        Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(30.dp))
+        } else {
+            Loading()
+        }
 
         for (i in drawerList.drawerList) {
-            DrawerItem(i.itemName, i.iconDrawer, context)
+            DrawerItem(
+                i.itemName,
+                i.iconDrawer,
+                context,
+                showEmailDialog,
+                setShowEmailDialog,
+                showUserNameDialog,
+                setShowUserNameDialog,
+                coroutineScope
+            )
         }
+
+        dialogEditEmail(
+            showDialog = showEmailDialog,
+            setShowDialog = setShowEmailDialog,
+            context = context
+        )
+        dialogEditUserName(
+            showDialog = showUserNameDialog,
+            setShowDialog = setShowUserNameDialog,
+            context = context
+        )
     }
 }
 
 @Composable
-fun DrawerItem(itemName: String, icon: Int, context: Context) {
+fun DrawerItem(
+    itemName: String,
+    icon: Int,
+    context: Context,
+    showEmailDialog: Boolean,
+    setShowEmailDialog: (Boolean) -> Unit,
+    showUserNameDialog: Boolean,
+    setShowUserNameDialog: (Boolean) -> Unit,
+    coroutineScope: CoroutineScope
+) {
+
+
     Row(
         modifier = Modifier
             .padding(all = 10.dp)
@@ -336,7 +379,19 @@ fun DrawerItem(itemName: String, icon: Int, context: Context) {
                         .makeText(context, "Successfully Logout", Toast.LENGTH_SHORT)
                         .show()
                 }
-
+                if (itemName == "Convert your image to pdf") {
+                    context.startActivity(Intent(context, OCR_Activity::class.java))
+                }
+                if (itemName == "Change user name") {
+                    coroutineScope.launch {
+                        setShowUserNameDialog(true)
+                    }
+                }
+                if (itemName == "Change your email and password") {
+                    coroutineScope.launch {
+                        setShowEmailDialog(true)
+                    }
+                }
             }
     ) {
         Image(
@@ -346,7 +401,7 @@ fun DrawerItem(itemName: String, icon: Int, context: Context) {
                 .padding(5.dp)
                 .height(40.dp)
                 .width(40.dp)
-                .clip(RoundedCornerShape(corner = CornerSize(10.dp)))
+                .clip(RoundedCornerShape(corner = CornerSize(30.dp)))
         )
 
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
@@ -508,29 +563,6 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
 
                 }
 
-                fun isLetters(string: String): Boolean {
-                    return string.none {
-                        it !in 'A'..'Z' && it !in 'a'..'z' && it !in '0'..'9' && it !in '0'..'9' && it !in charArrayOf(
-                            '.',
-                            '$',
-                            '!',
-                            '+',
-                            '-',
-                            '_',
-                            ' ',
-                            '(',
-                            ')'
-                        )
-                    }
-                }
-
-                fun urlToTimeStamp(link: String): String {
-                    val idStr: String = link.substring(link.lastIndexOf("/media/") + 7)
-                    val last = idStr.substring(idStr.lastIndexOf("/"))
-                    val done = idStr.replace(last, "")
-                    return done
-                }
-
                 fun savePdfToFB(model: Pdf_Model) {
                     model.title = model.title.toString().replace("\"", "")
                     Constants.GetFireStoneDb()?.collection("UsersBooks")!!
@@ -612,7 +644,7 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
 
                 }
 
-                Column() {
+                Column {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text("Adding New Pdf")
@@ -680,6 +712,253 @@ fun DialogAddingNewPDF(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, co
 
 
                 }
+
+            })
+    }
+
+}
+
+@Composable
+fun dialogEditEmail(showDialog: Boolean, setShowDialog: (Boolean) -> Unit, context: Context) {
+
+    var textFieldStateEmail by remember {
+        mutableStateOf("")
+    }
+    var textFieldStatePasssword by remember {
+        mutableStateOf("")
+    }
+    var textFieldStateNewEmail by remember {
+        mutableStateOf("")
+    }
+    var textFieldStateNewPasssword by remember {
+        mutableStateOf("")
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+            onDismissRequest = {
+                setShowDialog(false)
+            },
+            confirmButton = {
+
+            },
+            dismissButton = {
+
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "Change your email and password",
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    TextField(
+                        maxLines = 1,
+                        modifier = Modifier
+                            .height(50.dp),
+                        value = textFieldStateEmail,
+                        placeholder = { Text(text = "Your Current Email") },
+                        onValueChange = {
+                            textFieldStateEmail = it
+                        },
+                        shape = RoundedCornerShape(15.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = colorResource(id = com.hti.Grad_Project.R.color.orange_main)
+                        ),
+
+                        )
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    TextField(
+                        maxLines = 1,
+
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier
+                            .height(50.dp),
+                        value = textFieldStatePasssword,
+                        placeholder = { Text(text = "Your Current Password") },
+                        onValueChange = {
+                            textFieldStatePasssword = it
+                        },
+                        shape = RoundedCornerShape(15.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = colorResource(id = R.color.orange_main)
+                        ),
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    TextField(
+                        maxLines = 1,
+
+                        modifier = Modifier
+                            .height(50.dp),
+                        value = textFieldStateNewEmail,
+                        placeholder = { Text(text = "Your New Email") },
+                        onValueChange = {
+                            textFieldStateNewEmail = it
+                        },
+                        shape = RoundedCornerShape(15.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = colorResource(id = com.hti.Grad_Project.R.color.orange_main)
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    TextField(
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier
+                            .height(50.dp),
+                        value = textFieldStateNewPasssword,
+                        placeholder = { Text(text = "Your New Password") },
+                        onValueChange = {
+                            textFieldStateNewPasssword = it
+                        },
+                        shape = RoundedCornerShape(15.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = colorResource(id = R.color.orange_main)
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+
+                        Button(
+                            shape = RoundedCornerShape(15.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
+                            onClick = {
+                                // Change the state to close the dialog
+                                setShowDialog(false)
+                            },
+                        ) {
+                            Text("Dismiss")
+                        }
+                        Spacer(modifier = Modifier.width(20.dp))
+
+                        Button(
+                            shape = RoundedCornerShape(15.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main)),
+                            onClick = {
+
+                                if (textFieldStateEmail.isNotEmpty() && textFieldStatePasssword.isNotEmpty() && textFieldStateNewEmail.isNotEmpty() && textFieldStateNewPasssword.isNotEmpty()) {
+                                    Toast.makeText(context, "Please Wait......", Toast.LENGTH_SHORT)
+                                        .show()
+
+                                    Constants.GetAuth().signInWithEmailAndPassword(
+                                        textFieldStateEmail,
+                                        textFieldStatePasssword
+                                    ).addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+
+
+                                            Constants.GetAuth().currentUser!!.updateEmail(
+                                                textFieldStateNewEmail
+                                            )
+                                                .addOnCompleteListener { task ->
+                                                    if (task.isSuccessful) {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Successfully update email",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                            .show()
+                                                    } else {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "${task.exception.message}",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                            .show()
+                                                    }
+                                                }
+
+                                            Constants.GetAuth().currentUser!!.updatePassword(
+                                                textFieldStateNewPasssword
+                                            )
+                                                .addOnCompleteListener { task ->
+                                                    if (task.isSuccessful) {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Successfully update password",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                            .show()
+                                                    } else {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "${task.exception.message}",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                            .show()
+                                                    }
+                                                }
+
+                                        }
+                                    }
+
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Please fill all your data",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }) {
+                            Text("Save")
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                }
+
+            })
+    }
+}
+
+@Composable
+fun dialogEditUserName(
+    showDialog: Boolean,
+    setShowDialog: (Boolean) -> Unit,
+    context: Context
+) {
+
+    if (showDialog) {
+        AlertDialog(
+            modifier = Modifier.clip(RoundedCornerShape(20.dp)),
+            onDismissRequest = {
+                setShowDialog(false)
+
+            },
+            confirmButton = {
+
+            },
+            dismissButton = {
+
+            },
+            text = {
+
 
             })
     }

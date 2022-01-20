@@ -158,7 +158,7 @@ fun ShimmerEnhancedGoogle(brush: Brush) {
                     fontSize = 18.sp
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
                     text = "",
@@ -171,7 +171,7 @@ fun ShimmerEnhancedGoogle(brush: Brush) {
                         .height(100.dp)
                         .fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(

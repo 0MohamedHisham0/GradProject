@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.GradProject" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+    <style name="Theme.GradProject" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_main</item>
         <item name="colorPrimaryDark">@color/orange_main</item>
@@ -12,8 +12,8 @@
         <item name="colorOnSecondary">#ffff</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnPrimarySurface">#405467</item>
-
     </style>
+
 
     <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="background">@color/white</item>
@@ -29,4 +29,5 @@
     <style name="Theme.GradProject.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.GradProject.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>
