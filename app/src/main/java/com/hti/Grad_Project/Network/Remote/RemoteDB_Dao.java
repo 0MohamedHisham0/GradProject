@@ -34,13 +34,12 @@ public interface RemoteDB_Dao {
             @Query("model") String model,
             @Query("folder") String folder
     );
-
     @Multipart
     @POST("api/v2/files/add")
     Call<Pdf_Model> postPdf(@Part("title") String title,
                             @Part MultipartBody.Part file);
 
-    @GET("/api/search/")
+    @GET("api/search/")
     Call<AnswerList_Model> enhancedGoogle(@Query("question") String question);
 
 }

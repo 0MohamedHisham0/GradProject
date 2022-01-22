@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,7 +21,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -96,6 +99,7 @@ fun Answer_Model_Enhanced_Item(context: Context, model: Answer_Model) {
     val iconColor = remember { mutableStateOf(R.color.LightGray) }
 
     Column {
+        val accInt: Double = model.accuracy.toDouble() * 5
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -107,10 +111,8 @@ fun Answer_Model_Enhanced_Item(context: Context, model: Answer_Model) {
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "Accuracy", fontSize = 17.sp)
-
-                Text(text = model.accuracy, fontSize = 17.sp)
+                Text(text = accInt.toInt().toString() +"%", fontSize = 19.sp)
             }
-
 
         }
         Spacer(
@@ -139,7 +141,7 @@ fun Answer_Model_Enhanced_Item(context: Context, model: Answer_Model) {
                         )
                         textToSpeech.speak(
                             "The accuracy of Answer is :"
-                                    + model.accuracy,
+                                    + accInt.toInt().toString() + "%",
                             TextToSpeech.QUEUE_ADD,
                             null
                         )
@@ -160,8 +162,7 @@ fun Answer_Model_Enhanced_Item(context: Context, model: Answer_Model) {
                     }
                 }
                 .size(40.dp)
-                .padding(start = 0.dp)
-        )
+                .padding(start = 0.dp))
     }
 }
 
@@ -170,7 +171,6 @@ fun Answer_Model_Enhanced_Item(context: Context, model: Answer_Model) {
 fun GoogleEnhScreen(
     context: Context
 ) {
-
     var textFieldState_Question by remember {
         mutableStateOf("")
     }
@@ -198,104 +198,144 @@ fun GoogleEnhScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(0.dp)
     ) {
-        Text(
-            text = "Your Question",
-            color = Color.LightGray,
-            modifier = Modifier.padding(bottom = 5.dp)
-        )
 
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth().defaultMinSize(),
-            value = textFieldState_Question,
-            placeholder = { Text(text = "Ask your Question Here!") },
-            onValueChange = { textFieldState_Question = it },
-            shape = RoundedCornerShape(15.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = colorResource(id = R.color.orange_main)
-            ),
-            trailingIcon = {
-
-                IconButton(
-                    modifier = Modifier
-                        .size(25.dp),
-                    onClick = {
-                        // Get the Intent action
-                        val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                        // Language model defines the purpose, there are special models for other use cases, like search.
-                        sttIntent.putExtra(
-                            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                        )
-                        // Adding an extra language, you can use any language from the Locale class.
-                        sttIntent.putExtra(
-                            RecognizerIntent.EXTRA_LANGUAGE,
-                            Locale.getDefault()
-                        )
-                        // Text that shows up on the Speech input prompt.
-                        sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
-                        try {
-                            // Start the intent for a result, and pass in our request code.
-                            launcher.launch(sttIntent)
-                        } catch (e: ActivityNotFoundException) {
-                            // Handling error when the service is not available.
-                            e.printStackTrace()
-                            Toast.makeText(
-                                context,
-                                "Your device does not support STT.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_mic),
-                        contentDescription = "Mic",
-                        tint = colorResource(id = R.color.orange_main)
-                    )
-                }
-
+        Box() {
+            Image(
+                painterResource(id = R.drawable.google_icon),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(200.dp, 350.dp)
+                    .padding(top = 40.dp)
+            )
+            Surface(modifier = Modifier.fillMaxSize(), color = Color.Black.copy(alpha = 0.6f)) {
 
             }
-        )
+            Card(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                elevation = 8.dp, backgroundColor = Color.Black.copy(alpha = 0.4f),
 
-        Spacer(modifier = Modifier.height(20.dp))
+                ) {
+                Column(
+                    Modifier
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Your Question",
+                        color = Color.LightGray,
+                        modifier = Modifier.padding(bottom = 5.dp)
+                    )
+
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(),
+                        value = textFieldState_Question,
+                        placeholder = {
+                            Text(
+                                text = "Ask your Question Here!",
+                                color = Color.LightGray
+                            )
+                        },
+                        onValueChange = { textFieldState_Question = it },
+                        shape = RoundedCornerShape(15.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = colorResource(id = R.color.orange_main),
+                            textColor = Color.LightGray
+                        ),
+                        trailingIcon = {
+
+                            IconButton(
+                                modifier = Modifier
+                                    .size(25.dp),
+                                onClick = {
+                                    // Get the Intent action
+                                    val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                                    // Language model defines the purpose, there are special models for other use cases, like search.
+                                    sttIntent.putExtra(
+                                        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                                    )
+                                    // Adding an extra language, you can use any language from the Locale class.
+                                    sttIntent.putExtra(
+                                        RecognizerIntent.EXTRA_LANGUAGE,
+                                        Locale.getDefault()
+                                    )
+                                    // Text that shows up on the Speech input prompt.
+                                    sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+                                    try {
+                                        // Start the intent for a result, and pass in our request code.
+                                        launcher.launch(sttIntent)
+                                    } catch (e: ActivityNotFoundException) {
+                                        // Handling error when the service is not available.
+                                        e.printStackTrace()
+                                        Toast.makeText(
+                                            context,
+                                            "Your device does not support STT.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.icon_mic),
+                                    contentDescription = "Mic",
+                                    tint = colorResource(id = R.color.orange_main)
+                                )
+                            }
 
 
-        Button(
-            onClick = {
-                if (answerEnhancedState.value != "inProgress") {
-                    submitButton = true
+                        })
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            if (answerEnhancedState.value != "inProgress") {
+                                submitButton = true
 
-                    if (textFieldState_Question == "") {
-                        Toast.makeText(
-                            context,
-                            "You didn't enter any questions yet.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        getAnswers(textFieldState_Question, context)
+                                if (textFieldState_Question == "") {
+                                    Toast.makeText(
+                                        context,
+                                        "You didn't enter any questions yet.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    getAnswers(textFieldState_Question, context)
+                                }
+                            } else if (answerEnhancedState.value!!.contains("Failed")) {
+                                Toast.makeText(context, "Try again please!", Toast.LENGTH_SHORT)
+                                    .show()
+                                answerEnhancedState.value = "inProgress"
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Wait until the process finish.",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp), shape = RoundedCornerShape(15.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main))
+                    ) {
+                        Text(text = "ASK", color = Color.White)
                     }
-                } else {
-                    Toast.makeText(context, "Wait until the process finish.", Toast.LENGTH_SHORT)
-                        .show()
+
+                    if (submitButton)
+                        GetAnswerFromEnhancedGoogle()
                 }
 
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp), shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange_main))
-        ) {
-            Text(text = "ASK", color = Color.White)
+            }
         }
-        if (submitButton)
-            GetAnswerFromEnhancedGoogle()
+
 
     }
 
@@ -325,6 +365,7 @@ fun getAnswers(
                 call: Call<AnswerList_Model?>,
                 t: Throwable
             ) {
+                answerEnhancedState.value = "Failed ${t.message}"
                 Toast.makeText(
                     context,
                     "Failed ${t.message}",

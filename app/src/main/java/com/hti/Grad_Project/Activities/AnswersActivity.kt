@@ -433,6 +433,7 @@ fun ItemAnswer(
     modalBottomSheetState: ModalBottomSheetState,
     selectedItem: selectedItem, context: Context
 ) {
+    val accInt: Double = answer.accuracy.toDouble() * 5
 
     Card(
         modifier = Modifier
@@ -448,7 +449,7 @@ fun ItemAnswer(
                         selectedItem.paragraph = answer.paragraph
                         selectedItem.title = answer.title
                         selectedItem.answer = answer.answer
-                        selectedItem.aquarcy = answer.accuracy
+                        selectedItem.aquarcy = accInt.toInt().toString() +"%"
 
                     }
                 }
@@ -488,7 +489,7 @@ fun ItemAnswer(
                         Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Accuracy: ${answer.accuracy}",
+                            text = "Accuracy: ${accInt.toInt().toString()}%",
                             fontSize = 14.sp,
                             color = LightGray,
                         )

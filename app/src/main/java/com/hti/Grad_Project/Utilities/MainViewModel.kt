@@ -202,11 +202,11 @@ fun getQuestionsList(
                     question = document.data
                     val model: Answer_Model = Answer_Model()
 
-                    model.query = question.get("query").toString()
-                    model.answer = question.get("answer").toString()
-                    model.title = question.get("title").toString()
-                    model.accuracy = question.get("accuracy").toString()
-                    model.paragraph = question.get("paragraph").toString()
+                    model.query = question["query"].toString()
+                    model.answer = question["answer"].toString()
+                    model.title = question["title"].toString()
+                    model.accuracy = question["accuracy"].toString()
+                    model.paragraph = question["paragraph"].toString()
 
                     questionsList.add(model)
 

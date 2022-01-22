@@ -25,7 +25,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private final static String BASE_URL = "http://8cf0-154-179-126-81.ngrok.io/";
+    private final static String BASE_URL = "http://fd0c-102-57-81-193.ngrok.io/";
     private final RemoteDB_Dao remoteDB_dao;
     private static RetrofitClient retrofitClient;
 
