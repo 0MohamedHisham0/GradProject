@@ -7,3 +7,7 @@ Technologies and architectures  : MVVM, Android, Kotlin ,Jetpack Compose, Retrof
 firebase : Auth, RealtimeDB, firestoreDB, Image Recognition
 
 ![mockUp](https://user-images.githubusercontent.com/72823171/153439198-d49c8f75-bbb5-4b9b-a7e2-284bd43c61d6.png)
+
+check the video 
+https://www.linkedin.com/posts/mohamedhisham01_android-nlp-developer-activity-6895019066570944512-XqYF?utm_source=linkedin_share&utm_medium=member_desktop_web
+	 	
